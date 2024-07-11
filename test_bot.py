@@ -45,9 +45,12 @@ class TgBot:
 
                     # Get user profile photo
                     photos_data = self.bot.get_user_profile_photos(tg_user.id, limit=1)
-                    tg_photo = photos_data.photos[0]
-                    tg_photo.sort(key=lambda p: p.file_size, reverse=True)
-                    tg_photo_url = self.bot.get_file_url(tg_photo[0].file_id)
+                    if photos_data.total_count > 0:
+                        tg_photo = photos_data.photos[0]
+                        tg_photo.sort(key=lambda p: p.file_size, reverse=True)
+                        tg_photo_url = self.bot.get_file_url(tg_photo[0].file_id)
+                    else:
+                        tg_photo_url = '' # means no avatar, use default
 
                     res = self.rest.register_user(start, tg_user.id, tg_user.first_name, tg_user.last_name, tg_user.username, tg_photo_url)
                     
