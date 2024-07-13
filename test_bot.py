@@ -59,12 +59,15 @@ class TgBot:
                         self.bot.send_message(message.chat.id, msg)
                         return
                     
-                    if (res['result'] == 'success'):
+                    if (res['result'] == 'success' and 'link' in res):
                         # User registered successfully
-                        msg = f"Ссылка на личный кабинет \n{res['link']}"
+                        msg = f"Ссылка на личный кабинет: \n{res['link']}"
+                        self.bot.send_message(message.chat.id, msg)
+                    elif (res['result'] == 'failed' and 'error' in res):
+                        msg = f"Произошла ошибка при регистрации: \n{res['error']}"
                         self.bot.send_message(message.chat.id, msg)
                     else:
-                        msg = f"Произошла ошибка при регистрации. Пожалуйста, попробуйте снова"
+                        msg = f"Произошла неизвестная ошибка при регистрации. Пожалуйста, попробуйте снова"
                         self.bot.send_message(message.chat.id, msg)
                         
                 else:
