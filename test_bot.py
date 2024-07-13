@@ -25,22 +25,22 @@ class TgBot:
         @self.bot.message_handler(commands=["start"])
         def start_message(message: types.Message):
             tg_user = message.from_user
-            user = self.rest.get_user(tg_user.id)
+            user = self.rest.get_user_link(tg_user.id)
             
             if ('result' not in user):
                 pass    # TODO process possible errors in request to api
                 return
             
-            if (user['result'] == 'true'):
+            if (user['result'] == 'true' and 'link' in user):
                 # User found in database
-                msg = f"Привет, {tg_user.first_name}!"
+                msg = f"Привет, {tg_user.first_name}! Твой личный кабинет: \n{user['link']}"
                 self.bot.send_message(message.chat.id, msg)
             else:
                 # User not found
                 start = self.get_start_param(message.text)
                 if (start):
                     # Has start param
-                    msg = f"Добро пожаловать!, {tg_user.first_name}! Сейчас мы зарегистрируем вас и пришлём ссылку на вашу личную страницу"
+                    msg = f"Добро пожаловать, {tg_user.first_name}! Сейчас мы зарегистрируем вас и пришлём ссылку на вашу личную страницу"
                     self.bot.send_message(message.chat.id, msg)
 
                     # Get user profile photo

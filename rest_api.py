@@ -6,7 +6,7 @@ class RestApi:
     def __init__(self, api_url):
         self.api_url = api_url
 
-    def get_user(self, uid):
+    def get_user_link(self, uid):
         url = self.api_url + '/user'
         payload = {
             'uid': uid
