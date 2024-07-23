@@ -69,3 +69,22 @@ class RestApi:
             return errt
         except requests.exceptions.RequestException as err:
             return err
+        
+    def user_subscription(self, tg_uid):
+        url = self.api_url + '/user/subscribed'
+        payload = {
+            'tg_uid': tg_uid
+        }
+        try:
+            response = requests.post(url, data=payload, timeout=20)
+            response.raise_for_status()
+            response = response.json()
+            return response
+        except requests.exceptions.HTTPError as errh:
+            return errh
+        except requests.exceptions.ConnectionError as errc:
+            return errc
+        except requests.exceptions.Timeout as errt:
+            return errt
+        except requests.exceptions.RequestException as err:
+            return err

@@ -95,6 +95,39 @@ class TgBot:
         def text_message(message: types.Message):
             pass
 
+        @self.bot.chat_member_handler()
+        def test_msg(update: types.ChatMemberUpdated):
+            # print(update.new_chat_member.user)
+            # print('\n')
+            # print(update.new_chat_member.status)
+            if (update.new_chat_member.status in ['member', 'administrator', 'creator']): # need just 'member', the others are for test
+                res = self.rest.user_subscription(update.new_chat_member.user.id)
+                # print('RESPONSE:\n')
+                # print(res)
+
+                if ('result' not in res):
+                    # REST request error
+                    return
+                
+                if (res['result'] == 'success'):
+                    # User subscribed successfully
+                    msg = f"Благодарим вас за подписку на наш канал! Ваши бонусы уже в личном кабинете"
+                    self.bot.send_message(update.new_chat_member.user.id, msg)
+                elif (res['result'] == 'failed'):
+                    # No user found or already subscribed
+                    return
+                else:
+                    # API returned unknown result (should not occur)
+                    return
+
 
     def start_polling(self):
-        self.bot.infinity_polling()
+        self.bot.infinity_polling(allowed_updates=
+        [
+            "message",
+            "edited_message",
+            "channel_post",
+            "my_chat_member",
+            "chat_member",
+            "chat_join_request"
+        ])
