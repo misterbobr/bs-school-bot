@@ -1,102 +1,122 @@
 import sys
+import datetime
 
-from telebot import TeleBot, types
-from telebot.util import quick_markup
+import asyncio
+import logging
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters.command import Command
+from aiogram import F
 import rest_api
 
 class TgBot:
     def __init__(self, api_key, api_url):
         self.api_key = api_key
-        self.bot = TeleBot(self.api_key)
+        self.bot = Bot(self.api_key)
+        self.dp = Dispatcher()
         self.rest = rest_api.RestApi(api_url)
         self.setup_handlers()
-        self.start_polling()
-
+        asyncio.run(self.start_polling())
         
     def get_start_param(self, text):
         # Extracts the parameter value from the sent /start command.
         return text.split()[1] if len(text.split()) > 1 else None
 
-    def check_user_exists(self, uid):
+    def message_hello(self, uid):
         pass
+
+    async def push_1(self, uid):
+        now = datetime.datetime.time(datetime.datetime.now())
+        msg = f"Start command at {now}: "
+
+        try:
+            await asyncio.sleep(10) # wait some time
+            visited = self.rest.user_visited_lk(uid) # check if user has visited lk
+            if ('result' not in visited):
+                pass    # TODO process possible errors in request to api
+                return
+            if (visited['result'] == 'true'):
+                msg += "VISITED"
+            else:
+                msg += "NOT VISITED"
+            await self.bot.send_message(uid, msg)
+        
+        except Exception as e:
+            msg = "Exception occured: " + e
+            await self.bot.send_message(uid, msg)
+
 
     def setup_handlers(self):
         ### start command - act according to user registration status
-        @self.bot.message_handler(commands=["start"])
-        def start_message(message: types.Message):
+        @self.dp.message(Command("start"))
+        async def start_message(message: types.Message):
             tg_user = message.from_user
             user = self.rest.get_user_link(tg_user.id)
             
-            if ('result' not in user):
-                pass    # TODO process possible errors in request to api
-                return
-            
-            if (user['result'] == 'true' and 'link' in user):
-                # User found in database
-                msg = f"Привет, {tg_user.first_name}! Твой личный кабинет: \n{user['link']}"
-                self.bot.send_message(message.chat.id, msg)
-            else:
-                # User not found
-                start = self.get_start_param(message.text)
-                if (start):
-                    # Has start param
-                    msg = f"Добро пожаловать, {tg_user.first_name}! Сейчас мы зарегистрируем вас и пришлём ссылку на вашу личную страницу"
-                    self.bot.send_message(message.chat.id, msg)
-
-                    # Get user profile photo
-                    photos_data = self.bot.get_user_profile_photos(tg_user.id, limit=1)
-                    if photos_data.total_count > 0:
-                        tg_photo = photos_data.photos[0]
-                        tg_photo.sort(key=lambda p: p.file_size, reverse=True)
-                        tg_photo_url = self.bot.get_file_url(tg_photo[0].file_id)
-                    else:
-                        tg_photo_url = '' # means no avatar, use default
-
-                    res = self.rest.register_user(start, tg_user.id, tg_user.first_name, tg_user.last_name, tg_user.username, tg_photo_url)
-                    
-                    if ('result' not in res):
-                        msg = f"Произошла ошибка при попытке отправить запрос. Пожалуйста, попробуйте снова"
-                        self.bot.send_message(message.chat.id, msg)
-                        return
-                    
-                    if (res['result'] == 'success' and 'link' in res):
-                        # User registered successfully
-                        msg = f"Ссылка на личный кабинет: \n{res['link']}"
-                        self.bot.send_message(message.chat.id, msg)
-                    elif (res['result'] == 'failed' and 'error' in res):
-                        msg = f"Произошла ошибка при регистрации: \n{res['error']}"
-                        self.bot.send_message(message.chat.id, msg)
-                    else:
-                        msg = f"Произошла неизвестная ошибка при регистрации. Пожалуйста, попробуйте снова"
-                        self.bot.send_message(message.chat.id, msg)
-                        
+            try:
+                if ('result' not in user):
+                    pass    # TODO process possible errors in request to api
+                    return
+                
+                if (user['result'] == 'true' and 'link' in user):
+                    # User found in database
+                    msg = f"Привет, {tg_user.first_name}! Твой личный кабинет: \n{user['link']}"
+                    await self.bot.send_message(message.chat.id, msg)
+                    await self.push_1(tg_user.id)
                 else:
-                    # No start param
-                    msg = f"Пожалуйста, пройдите регистрацию на странице ..."
-                    self.bot.send_message(message.chat.id, msg)
+                    # User not found
+                    start = await self.get_start_param(message.text)
+                    if (start):
+                        # Has start param
+                        msg = f"Добро пожаловать, {tg_user.first_name}! Сейчас мы зарегистрируем вас и пришлём ссылку на вашу личную страницу"
+                        await self.bot.send_message(message.chat.id, msg)
+
+                        # Get user profile photo
+                        photos_data = await self.bot.get_user_profile_photos(tg_user.id, limit=1)
+                        if photos_data.total_count > 0:
+                            tg_photo = photos_data.photos[0]
+                            tg_photo.sort(key=lambda p: p.file_size, reverse=True)
+                            tg_photo_url = await self.bot.get_file_url(tg_photo[0].file_id)
+                        else:
+                            tg_photo_url = '' # means no avatar, use default
+
+                        res = self.rest.register_user(start, tg_user.id, tg_user.first_name, tg_user.last_name, tg_user.username, tg_photo_url)
+                        
+                        if ('result' not in res):
+                            msg = f"Произошла ошибка при попытке отправить запрос. Пожалуйста, попробуйте снова"
+                            await self.bot.send_message(message.chat.id, msg)
+                            return
+                        
+                        if (res['result'] == 'success' and 'link' in res):
+                            # User registered successfully
+                            msg = f"Ссылка на личный кабинет: \n{res['link']}"
+                            await self.bot.send_message(message.chat.id, msg)
+                            await self.push_1(tg_user.id)
+                        elif (res['result'] == 'failed' and 'error' in res):
+                            msg = f"Произошла ошибка при регистрации: \n{res['error']}"
+                            await self.bot.send_message(message.chat.id, msg)
+                        else:
+                            msg = f"Произошла неизвестная ошибка при регистрации. Пожалуйста, попробуйте снова"
+                            await self.bot.send_message(message.chat.id, msg)
+                            
+                    else:
+                        # No start param
+                        msg = f"Пожалуйста, пройдите регистрацию на странице ..."
+                        await self.bot.send_message(message.chat.id, msg)
+        
+            except TypeError:
+                print(user, ' is not iterable')
                 
-                
-            # if user:
-            #     if user.verified_status.verified:
-            #         self.bot.send_message(
-            #             message.chat.id, "Добро пожаловать в бота"
-            #         )
-            # else:
-            #     pass
 
-        @self.bot.message_handler(commands=["kill"])
-        def kill_command(message: types.Message):
-            if message.text.endswith(self.api_key):
-                self.bot.stop_bot()
-                sys.exit()
-
-
-        @self.bot.message_handler(content_types=["text"])
-        def text_message(message: types.Message):
+        @self.dp.message(F.text)
+        async def text_message(message: types.Message):
+            now = datetime.datetime.time(datetime.datetime.now())
+            msg = f"{now}: {message.text}"
+            await asyncio.sleep(5)
+            await self.bot.send_message(message.chat.id, msg)
             pass
 
-        @self.bot.chat_member_handler()
-        def test_msg(update: types.ChatMemberUpdated):
+        @self.dp.chat_member()
+        async def new_chat_member(update: types.ChatMemberUpdated):
             # print(update.new_chat_member.user)
             # print('\n')
             # print(update.new_chat_member.status)
@@ -112,7 +132,7 @@ class TgBot:
                 if (res['result'] == 'success'):
                     # User subscribed successfully
                     msg = f"Благодарим вас за подписку на наш канал! Ваши бонусы уже в личном кабинете"
-                    self.bot.send_message(update.new_chat_member.user.id, msg)
+                    await self.bot.send_message(update.new_chat_member.user.id, msg)
                 elif (res['result'] == 'failed'):
                     # No user found or already subscribed
                     return
@@ -120,14 +140,5 @@ class TgBot:
                     # API returned unknown result (should not occur)
                     return
 
-
-    def start_polling(self):
-        self.bot.infinity_polling(allowed_updates=
-        [
-            "message",
-            "edited_message",
-            "channel_post",
-            "my_chat_member",
-            "chat_member",
-            "chat_join_request"
-        ])
+    async def start_polling(self):
+        await self.dp.start_polling(self.bot)

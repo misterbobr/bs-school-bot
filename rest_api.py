@@ -5,6 +5,7 @@ class RestApi:
 
     def __init__(self, api_url):
         self.api_url = api_url
+        self.session = requests.Session()
 
     def get_user_link(self, uid):
         url = self.api_url + '/user'
@@ -12,7 +13,26 @@ class RestApi:
             'uid': uid
         }
         try:
-            response = requests.get(url, params=payload, timeout=10)
+            response = self.session.get(url, params=payload, timeout=10)
+            response.raise_for_status()
+            response = response.json()
+            return response
+        except requests.exceptions.HTTPError as errh:
+            return errh
+        except requests.exceptions.ConnectionError as errc:
+            return errc
+        except requests.exceptions.Timeout as errt:
+            return errt
+        except requests.exceptions.RequestException as err:
+            return err
+        
+    def user_visited_lk(self, uid):
+        url = self.api_url + '/user/visited_lk'
+        payload = {
+            'uid': uid
+        }
+        try:
+            response = self.session.get(url, params=payload, timeout=10)
             response.raise_for_status()
             response = response.json()
             return response
@@ -33,7 +53,7 @@ class RestApi:
             'email': email
         }
         try:
-            response = requests.post(url, data=payload, timeout=10)
+            response = self.session.post(url, data=payload, timeout=10)
             response.raise_for_status()
             response = response.json()
             return response
@@ -57,7 +77,7 @@ class RestApi:
             'tg_picture': tg_picture
         }
         try:
-            response = requests.post(url, data=payload, timeout=20)
+            response = self.session.post(url, data=payload, timeout=20)
             response.raise_for_status()
             response = response.json()
             return response
@@ -76,7 +96,7 @@ class RestApi:
             'tg_uid': tg_uid
         }
         try:
-            response = requests.post(url, data=payload, timeout=20)
+            response = self.session.post(url, data=payload, timeout=20)
             response.raise_for_status()
             response = response.json()
             return response
