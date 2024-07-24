@@ -166,3 +166,10 @@ cython_debug/
 
 # SqLite
 *.db
+
+assets/
+
+# Video
+*.mp4
+# Text
+*.txt

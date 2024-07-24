@@ -21,8 +21,28 @@ class TgBot:
         # Extracts the parameter value from the sent /start command.
         return text.split()[1] if len(text.split()) > 1 else None
 
-    def message_hello(self, uid):
-        pass
+    async def message_hello(self, uid):
+        file_name = "assets/videos/tgvideo"
+        file_id = ''
+        try:
+            # Take file_id from txt file if exists
+            f = open(file_name + ".txt", "r")
+            file_id = f.readline()
+            f.close()
+        except:
+            pass
+
+        if (file_id == ''):
+            video = types.FSInputFile(file_name + ".mp4")
+            result = await self.bot.send_video_note(uid, video)
+            f = open(file_name + ".txt", "w")
+            f.write(result.video_note.file_id)
+            f.close()
+        else:
+            result = await self.bot.send_video_note(uid, file_id)
+            print('Reused File ID')
+
+        print('File ID: ' + result.video_note.file_id)
 
     async def push_1(self, uid):
         now = datetime.datetime.time(datetime.datetime.now())
@@ -61,6 +81,7 @@ class TgBot:
                     # User found in database
                     msg = f"Привет, {tg_user.first_name}! Твой личный кабинет: \n{user['link']}"
                     await self.bot.send_message(message.chat.id, msg)
+                    await self.message_hello(tg_user.id)
                     await self.push_1(tg_user.id)
                 else:
                     # User not found
@@ -90,6 +111,7 @@ class TgBot:
                             # User registered successfully
                             msg = f"Ссылка на личный кабинет: \n{res['link']}"
                             await self.bot.send_message(message.chat.id, msg)
+                            await self.message_hello(tg_user.id)
                             await self.push_1(tg_user.id)
                         elif (res['result'] == 'failed' and 'error' in res):
                             msg = f"Произошла ошибка при регистрации: \n{res['error']}"
