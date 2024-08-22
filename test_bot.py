@@ -85,7 +85,7 @@ class TgBot:
                     await self.push_1(tg_user.id)
                 else:
                     # User not found
-                    start = await self.get_start_param(message.text)
+                    start = self.get_start_param(message.text)
                     if (start):
                         # Has start param
                         msg = f"Добро пожаловать, {tg_user.first_name}! Сейчас мы зарегистрируем вас и пришлём ссылку на вашу личную страницу"
@@ -125,8 +125,8 @@ class TgBot:
                         msg = f"Пожалуйста, пройдите регистрацию на странице ..."
                         await self.bot.send_message(message.chat.id, msg)
         
-            except TypeError:
-                print(user, ' is not iterable')
+            except TypeError as e:
+                print(e)
                 
 
         @self.dp.message(F.text)

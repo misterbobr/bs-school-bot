@@ -8,12 +8,9 @@ class RestApi:
         self.session = requests.Session()
 
     def get_user_link(self, uid):
-        url = self.api_url + '/user'
-        payload = {
-            'uid': uid
-        }
+        url = self.api_url + f"/course/excel/page/link/{uid}"
         try:
-            response = self.session.get(url, params=payload, timeout=10)
+            response = self.session.get(url, params={}, timeout=10)
             response.raise_for_status()
             response = response.json()
             return response
@@ -27,15 +24,12 @@ class RestApi:
             return err
         
     def user_visited_lk(self, uid):
-        url = self.api_url + '/user/visited_lk'
-        payload = {
-            'uid': uid
-        }
+        url = self.api_url + f"/course/excel/users/{uid}"
         try:
-            response = self.session.get(url, params=payload, timeout=10)
+            response = self.session.get(url, params={}, timeout=10)
             response.raise_for_status()
             response = response.json()
-            return response
+            return {'result': 'true'} if ('visited' in response and response['visited'] is not None) else {'result': 'false'} 
         except requests.exceptions.HTTPError as errh:
             return errh
         except requests.exceptions.ConnectionError as errc:
@@ -46,7 +40,7 @@ class RestApi:
             return err
         
     def new_submission(self, name, phone, email):
-        url = self.api_url + '/new_submission'
+        url = self.api_url + '/course/excel/submissions'
         payload = {
             'name': name,
             'phone': phone,
@@ -71,9 +65,9 @@ class RestApi:
         payload = {
             'submission_id': submission_id,
             'tg_uid': tg_uid,
-            'tg_first_name': tg_first_name,
-            'tg_last_name': tg_last_name,
-            'tg_username': tg_username,
+            'first_name': tg_first_name,
+            'last_name': tg_last_name,
+            'username': tg_username,
             'tg_picture': tg_picture
         }
         try:
@@ -90,16 +84,17 @@ class RestApi:
         except requests.exceptions.RequestException as err:
             return err
         
-    def user_subscription(self, tg_uid):
-        url = self.api_url + '/user/subscribed'
+    def user_subscription(self, uid):
+        url = self.api_url + f"/users/{uid}"
         payload = {
-            'tg_uid': tg_uid
+            'subscribed': 1
         }
         try:
-            response = self.session.post(url, data=payload, timeout=20)
+            response = self.session.patch(url, data=payload, timeout=20)
             response.raise_for_status()
+            # check that response is number and greater than 0
             response = response.json()
-            return response
+            return {'result': 'success'} if (type(response) == int and response > 0) else {'result': 'failed'} 
         except requests.exceptions.HTTPError as errh:
             return errh
         except requests.exceptions.ConnectionError as errc:
