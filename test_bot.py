@@ -6,11 +6,13 @@ import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
 from aiogram import F
+import io
 import rest_api
 
 class TgBot:
-    def __init__(self, api_key, api_url):
+    def __init__(self, api_key, api_url, uploads_path):
         self.api_key = api_key
+        self.uploads_path = uploads_path
         self.bot = Bot(self.api_key)
         self.dp = Dispatcher()
         self.rest = rest_api.RestApi(api_url)
@@ -93,12 +95,16 @@ class TgBot:
 
                         # Get user profile photo
                         photos_data = await self.bot.get_user_profile_photos(tg_user.id, limit=1)
+                        tg_photo_url = ''
                         if photos_data.total_count > 0:
                             tg_photo = photos_data.photos[0]
                             tg_photo.sort(key=lambda p: p.file_size, reverse=True)
-                            tg_photo_url = await self.bot.get_file_url(tg_photo[0].file_id)
-                        else:
-                            tg_photo_url = '' # means no avatar, use default
+                            # Upload user avatar and send its relative path
+                            tg_photo_url = tg_user.id + '/' + tg_photo[0].file_id
+                            await self.bot.download(tg_photo[0].file_id, self.uploads_path + tg_photo_url)
+                            # tg_photo_file = await self.bot.get_file(tg_photo[0].file_id)
+                            # if (tg_photo_file is not None and 'file_path' in tg_photo_file):
+                            #     tg_photo_url = tg_photo_file.file_path
 
                         res = self.rest.register_user(start, tg_user.id, tg_user.first_name, tg_user.last_name, tg_user.username, tg_photo_url)
                         

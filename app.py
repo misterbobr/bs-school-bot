@@ -5,4 +5,5 @@ import test_bot
 load_dotenv(override=True)
 API_KEY = getenv('TG_API_KEY')
 API_URL = getenv('REST_API_URL')
-bot = test_bot.TgBot(API_KEY, API_URL)
+UPLOADS_PATH = getenv('UPLOADS_PATH')
+bot = test_bot.TgBot(API_KEY, API_URL, UPLOADS_PATH)
