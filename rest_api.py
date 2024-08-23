@@ -61,7 +61,7 @@ class RestApi:
             return err
 
     def register_user(self, submission_id, tg_uid, tg_first_name, tg_last_name, tg_username, tg_picture):
-        url = self.api_url + '/user/register'
+        url = self.api_url + '/course/excel/users'
         payload = {
             'submission_id': submission_id,
             'tg_uid': tg_uid,
