@@ -46,6 +46,25 @@ class RestApi:
         except requests.exceptions.RequestException as err:
             return err
         
+    def get_user_lessons(self, uid):
+        url = self.api_url + f"/course/excel/users/{uid}/lessons"
+        headers = {
+            "Authorization": f"{self.api_key}"
+        }
+        try:
+            response = self.session.get(url, params={}, headers=headers, timeout=10)
+            response.raise_for_status()
+            response = response.json()
+            return response
+        except requests.exceptions.HTTPError as errh:
+            return errh
+        except requests.exceptions.ConnectionError as errc:
+            return errc
+        except requests.exceptions.Timeout as errt:
+            return errt
+        except requests.exceptions.RequestException as err:
+            return err
+        
     def new_submission(self, name, phone, email):
         url = self.api_url + '/course/excel/submissions'
         headers = {

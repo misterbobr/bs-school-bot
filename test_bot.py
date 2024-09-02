@@ -12,7 +12,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 import io
 from rest_api import RestApi
-from notifications import Notifications
+# from notifications import Notifications
+from lesson import Lesson
 
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError
 
@@ -22,7 +23,7 @@ class TgBot:
         self.bot = Bot(token=tg_api_key, default=DefaultBotProperties(
             parse_mode=ParseMode.HTML
         ))
-        self.notifications = Notifications()
+        # self.notifications = Notifications()
         self.dp = Dispatcher()
         self.rest = RestApi(rest_api_url, rest_api_key)
         self.exceptions = [HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError]
@@ -32,29 +33,6 @@ class TgBot:
     def get_start_param(self, text):
         # Extracts the parameter value from the sent /start command.
         return text.split()[1] if len(text.split()) > 1 else None
-
-    async def video_message(self, uid, file_name, file_ext='mp4'):
-        # file_name = "assets/videos/tgvideo"
-        file_id = ''
-        try:
-            # Take file_id from txt file if exists
-            f = open(file_name + ".txt", "r")
-            file_id = f.readline()
-            f.close()
-        except Exception as e:
-            print(e)
-
-        if (file_id == ''):
-            video = types.FSInputFile(file_name + '.' + file_ext)
-            result = await self.bot.send_video_note(uid, video)
-            f = open(file_name + ".txt", "w")
-            f.write(result.video_note.file_id)
-            f.close()
-        else:
-            result = await self.bot.send_video_note(uid, file_id)
-            print('Reused File ID')
-
-        print('File ID: ' + result.video_note.file_id)
 
     async def delayed_push(self, uid):
         now = datetime.datetime.time(datetime.datetime.now())
@@ -76,6 +54,17 @@ class TgBot:
             msg = "Exception occured: " + e
             await self.bot.send_message(uid, msg)
 
+    async def start_lessons(self, tg_user: types.User, lk_url: str):
+        # lesson_6 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 6)
+        # lesson_5 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 5, lesson_6)
+        # lesson_4 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 4, lesson_5)
+        # lesson_3 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 3, lesson_4)
+        # lesson_2 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 2, lesson_3)
+        # lesson_1 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 1, lesson_2)
+        lesson_3 = Lesson(self, tg_user, lk_url, [0.0,0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0,0.0,0.0,0.02], [], 3)
+        lesson_2 = Lesson(self, tg_user, lk_url, [0.0,0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0,0.0,0.0,0.02], [], 2, lesson_3)
+        lesson_1 = Lesson(self, tg_user, lk_url, [0.0,0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0,0.0,0.0,0.02], [], 1, lesson_2)
+        await lesson_1.start_lesson(tg_user.id)
 
     def setup_handlers(self):
         ### start command - act according to user registration status
@@ -97,6 +86,7 @@ class TgBot:
                 # User found in database
                 msg = f"Привет, {tg_user.first_name}! Твой личный кабинет: \n{user['link']}"
                 await self.bot.send_message(message.chat.id, msg)
+                await self.start_lessons(tg_user, user['link'])
                 # await self.video_message(tg_user.id, 'assets/videos/tgvideo')
                 # await self.push_1(tg_user.id)
             else:
@@ -138,10 +128,11 @@ class TgBot:
                     
                     if (res['result'] == 'success' and 'link' in res):
                         # User registered successfully
-                        # msg = f"Ссылка на личный кабинет: \n{res['link']}"
-                        msg = self.notifications.lesson_1_1(tg_user.first_name, res['link'])
-                        await self.bot.send_message(message.chat.id, text=msg['text'], reply_markup=msg['markup'])
-                        await self.video_message(tg_user.id, 'assets/videos/tgvideo', 'mp4')
+                        # Start 1st lesson
+                        await self.start_lessons(tg_user, res['link'])
+                        # msg = self.notifications.lesson_1_0(tg_user.first_name, res['link'])
+                        # await self.bot.send_message(message.chat.id, text=msg['text'], reply_markup=msg['markup'])
+                        # await self.video_message(tg_user.id, 'assets/videos/tgvideo', 'mp4')
                         # await self.push_1(tg_user.id)
                     elif (res['result'] == 'failed' and 'error' in res):
                         msg = f"Произошла ошибка при регистрации: \n{res['error']}"
