@@ -4,22 +4,28 @@ from os import makedirs
 
 import asyncio
 import logging
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, types, enums
+from aiogram.enums.parse_mode import ParseMode
 from aiogram.filters.command import Command
 from aiogram import F
+from aiogram.client.default import DefaultBotProperties
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 import io
-import rest_api
+from rest_api import RestApi
+from notifications import Notifications
 
-from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
+from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError
 
 class TgBot:
-    def __init__(self, api_key, api_url, uploads_path):
-        self.api_key = api_key
+    def __init__(self, tg_api_key, rest_api_url, rest_api_key, uploads_path):
         self.uploads_path = uploads_path
-        self.bot = Bot(self.api_key)
+        self.bot = Bot(token=tg_api_key, default=DefaultBotProperties(
+            parse_mode=ParseMode.HTML
+        ))
+        self.notifications = Notifications()
         self.dp = Dispatcher()
-        self.rest = rest_api.RestApi(api_url)
-        self.exceptions = [HTTPError, ConnectionError, Timeout, RequestException]
+        self.rest = RestApi(rest_api_url, rest_api_key)
+        self.exceptions = [HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError]
         self.setup_handlers()
         asyncio.run(self.start_polling())
         
@@ -27,8 +33,8 @@ class TgBot:
         # Extracts the parameter value from the sent /start command.
         return text.split()[1] if len(text.split()) > 1 else None
 
-    async def message_hello(self, uid):
-        file_name = "assets/videos/tgvideo"
+    async def video_message(self, uid, file_name, file_ext='mp4'):
+        # file_name = "assets/videos/tgvideo"
         file_id = ''
         try:
             # Take file_id from txt file if exists
@@ -39,7 +45,7 @@ class TgBot:
             print(e)
 
         if (file_id == ''):
-            video = types.FSInputFile(file_name + ".mp4")
+            video = types.FSInputFile(file_name + '.' + file_ext)
             result = await self.bot.send_video_note(uid, video)
             f = open(file_name + ".txt", "w")
             f.write(result.video_note.file_id)
@@ -50,7 +56,7 @@ class TgBot:
 
         print('File ID: ' + result.video_note.file_id)
 
-    async def push_1(self, uid):
+    async def delayed_push(self, uid):
         now = datetime.datetime.time(datetime.datetime.now())
         msg = f"Start command at {now}: "
 
@@ -79,7 +85,11 @@ class TgBot:
             user = self.rest.get_user_link(tg_user.id)
             
             # try:
-            if ('result' not in user):
+            if (type(user) in self.exceptions):
+                msg = f"Произошла ошибка при попытке отправить запрос: {user}"
+                await self.bot.send_message(message.chat.id, msg)
+                return
+            elif ('result' not in user):
                 pass    # TODO process possible errors in request to api
                 return
             
@@ -87,8 +97,8 @@ class TgBot:
                 # User found in database
                 msg = f"Привет, {tg_user.first_name}! Твой личный кабинет: \n{user['link']}"
                 await self.bot.send_message(message.chat.id, msg)
-                await self.message_hello(tg_user.id)
-                await self.push_1(tg_user.id)
+                # await self.video_message(tg_user.id, 'assets/videos/tgvideo')
+                # await self.push_1(tg_user.id)
             else:
                 # User not found
                 start = self.get_start_param(message.text)
@@ -116,7 +126,7 @@ class TgBot:
                         #     tg_photo_url = tg_photo_file.file_path
 
                     res = self.rest.register_user(start, tg_user.id, tg_user.first_name, tg_user.last_name, tg_user.username, tg_photo_url)
-                    
+
                     if (type(res) in self.exceptions):
                         msg = f"Произошла ошибка при попытке отправить запрос: {res}"
                         await self.bot.send_message(message.chat.id, msg)
@@ -128,10 +138,11 @@ class TgBot:
                     
                     if (res['result'] == 'success' and 'link' in res):
                         # User registered successfully
-                        msg = f"Ссылка на личный кабинет: \n{res['link']}"
-                        await self.bot.send_message(message.chat.id, msg)
-                        await self.message_hello(tg_user.id)
-                        await self.push_1(tg_user.id)
+                        # msg = f"Ссылка на личный кабинет: \n{res['link']}"
+                        msg = self.notifications.lesson_1_1(tg_user.first_name, res['link'])
+                        await self.bot.send_message(message.chat.id, text=msg['text'], reply_markup=msg['markup'])
+                        await self.video_message(tg_user.id, 'assets/videos/tgvideo', 'mp4')
+                        # await self.push_1(tg_user.id)
                     elif (res['result'] == 'failed' and 'error' in res):
                         msg = f"Произошла ошибка при регистрации: \n{res['error']}"
                         await self.bot.send_message(message.chat.id, msg)
@@ -144,7 +155,7 @@ class TgBot:
                     msg = f"Пожалуйста, пройдите регистрацию на странице ..."
                     await self.bot.send_message(message.chat.id, msg)
         
-            # except TypeError as e:
+            # except Exception as e:
             #     print(e)
                 
 
