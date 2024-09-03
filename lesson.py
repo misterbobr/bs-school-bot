@@ -52,11 +52,14 @@ class Lesson:
     async def send_notification(self):
         # last step (24 hrs of inactivity)
         if self.current_step >= len(self.step_delays) - 1:
-            fun = "self.notifications.lesson_inactive()"
+            if self.current_lesson == 4:
+                fun = "self.notifications.lesson_4_end()"
+            else:
+                fun = "self.notifications.lesson_inactive()"
         else:
             fun = "self.notifications.lesson_" + str(self.current_lesson) + "_" + str(self.current_step) + "()"
         print(fun)
-        # await eval(fun)
+        await eval(fun)
     
     async def start_lesson(self, uid):
         # Checking homework status until final step is reached

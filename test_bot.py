@@ -55,16 +55,25 @@ class TgBot:
             await self.bot.send_message(uid, msg)
 
     async def start_lessons(self, tg_user: types.User, lk_url: str):
-        # lesson_6 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 6)
-        # lesson_5 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 5, lesson_6)
-        # lesson_4 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 4, lesson_5)
+        # lesson_4 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 4)
         # lesson_3 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 3, lesson_4)
         # lesson_2 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 2, lesson_3)
         # lesson_1 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 1, lesson_2)
-        lesson_3 = Lesson(self, tg_user, lk_url, [0.0,0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0,0.0,0.0,0.02], [], 3)
-        lesson_2 = Lesson(self, tg_user, lk_url, [0.0,0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0,0.0,0.0,0.02], [], 2, lesson_3)
-        lesson_1 = Lesson(self, tg_user, lk_url, [0.0,0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0,0.0,0.0,0.02], [], 1, lesson_2)
-        await lesson_1.start_lesson(tg_user.id)
+
+        # Find last completed lesson
+        current_lesson = 1
+        lessons: list = self.rest.get_user_lessons(tg_user.id)
+        for lesson in lessons:
+            if (lesson['completed']):
+                current_lesson += 1
+            else:
+                break
+
+        lesson_4 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,         0.02,0.02,0.02,0.02,0.02,0.05], [], 4)
+        lesson_3 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.05], [], 3, lesson_4)
+        lesson_2 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05], [], 2, lesson_3)
+        lesson_1 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05], [], 1, lesson_2)
+        await eval(f"lesson_{current_lesson}.start_lesson({tg_user.id})")
 
     def setup_handlers(self):
         ### start command - act according to user registration status
