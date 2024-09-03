@@ -59,7 +59,7 @@ class Lesson:
         # await eval(fun)
     
     async def start_lesson(self, uid):
-        # Checking homework status while final step not reached
+        # Checking homework status until final step is reached
         while self.current_step < len(self.step_delays):
             status = await self.check_homework(uid, self.step_delays[self.current_step] * 60)
             # Next step if hw not received/completed
@@ -69,18 +69,28 @@ class Lesson:
                 # if hw completed, go to next lesson
                 if status == 'completed':
                     print('HW COMPLETED')
+                    fun = "self.notifications.lesson_done()"
+                    await eval(fun)
+                    if (self.current_lesson == 1):
+                        await asyncio.sleep(0.05 * 60)
+                        fun = "self.notifications.lesson_1_after_done()"
+                        await eval(fun)
+
                     if (self.next_lesson):
                         await self.next_lesson.start_lesson(uid)
                     break
+
                 # if hw received, check its status every 5 min
                 elif status == 'received':
                     print('HW RECEIVED')
                     await asyncio.sleep(0.3 * 60)
-                # if hw overdue
+
+                # if hw overdue, stop
                 elif status == 'overdue':
                     print('HW OVERDUE')
                     await asyncio.sleep(0.3 * 60)
                     return
+                
                 else:
                     print('HW UNKNOWN STATUS')
                     await asyncio.sleep(0.5 * 60)
