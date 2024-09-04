@@ -107,9 +107,9 @@ class Notifications:
             url=self.lk_url)
         )
         
-        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
-        await asyncio.sleep(1)
         await self.video_message(self.tg_user.id, 'assets/videos/circles/1.mov')
+        await asyncio.sleep(1)
+        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
         # return {
         #     'text': msg,
         #     'markup': builder.as_markup()
@@ -201,9 +201,9 @@ class Notifications:
             url=self.lk_url)
         )
         
-        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
-        await asyncio.sleep(1)
         await self.video_message(self.tg_user.id, 'assets/videos/circles/2.mov')
+        await asyncio.sleep(1)
+        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_1_5(self):
         builder = InlineKeyboardBuilder()
@@ -226,9 +226,9 @@ class Notifications:
             url=self.lk_url)
         )
         
-        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
-        await asyncio.sleep(1)
         await self.video_message(self.tg_user.id, 'assets/videos/circles/3.mov')
+        await asyncio.sleep(1)
+        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_1_6(self):
         builder = InlineKeyboardBuilder()
@@ -387,6 +387,7 @@ class Notifications:
         )
 
         await self.video_message(self.tg_user.id, 'assets/videos/screencasts/2.mp4')
+        await asyncio.sleep(1)
         await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
 
@@ -474,9 +475,9 @@ class Notifications:
             url=self.lk_url)
         )
         
-        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
-        await asyncio.sleep(1)
         await self.video_message(self.tg_user.id, 'assets/videos/circles/4.mov')
+        await asyncio.sleep(1)
+        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_2_4(self):
         builder = InlineKeyboardBuilder()
@@ -494,9 +495,9 @@ class Notifications:
             url=self.lk_url)
         )
         
-        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
-        await asyncio.sleep(1)
         await self.video_message(self.tg_user.id, 'assets/videos/circles/5.mov')
+        await asyncio.sleep(1)
+        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_2_5(self):
         builder = InlineKeyboardBuilder()
@@ -596,9 +597,9 @@ class Notifications:
             url=self.lk_url)
         )
         
-        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
-        await asyncio.sleep(1)
         await self.video_message(self.tg_user.id, 'assets/videos/circles/6.mov')
+        await asyncio.sleep(1)
+        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_2_10(self):
         builder = InlineKeyboardBuilder()
@@ -670,9 +671,9 @@ class Notifications:
             url=self.lk_url)
         )
         
-        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
-        await asyncio.sleep(1)
         await self.video_message(self.tg_user.id, 'assets/videos/screencasts/3.mov')
+        await asyncio.sleep(1)
+        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_3_1(self):
         builder = InlineKeyboardBuilder()
@@ -744,9 +745,9 @@ class Notifications:
             url=self.lk_url)
         )
         
-        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
-        await asyncio.sleep(1)
         await self.video_message(self.tg_user.id, 'assets/videos/circles/7.mov')
+        await asyncio.sleep(1)
+        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_3_4(self):
         builder = InlineKeyboardBuilder()
@@ -927,9 +928,9 @@ class Notifications:
             url=self.lk_url)
         )
         
-        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
-        await asyncio.sleep(1)
         await self.video_message(self.tg_user.id, 'assets/videos/screencasts/4.mov')
+        await asyncio.sleep(1)
+        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_4_1(self):
         builder = InlineKeyboardBuilder()
@@ -953,9 +954,9 @@ class Notifications:
             url=self.lk_url)
         )
         
-        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
-        await asyncio.sleep(1)
         await self.video_message(self.tg_user.id, 'assets/videos/circles/8.mov')
+        await asyncio.sleep(1)
+        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_4_2(self):
         builder = InlineKeyboardBuilder()
