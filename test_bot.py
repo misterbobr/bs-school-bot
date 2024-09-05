@@ -1,6 +1,7 @@
 import sys
 import datetime
-from os import makedirs
+from os import makedirs, path
+import os
 
 import asyncio
 import logging
@@ -15,7 +16,7 @@ from rest_api import RestApi
 # from notifications import Notifications
 from lesson import Lesson
 
-from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError
+from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError, ReadTimeout
 
 class TgBot:
     def __init__(self, tg_api_key, rest_api_url, rest_api_key, uploads_path):
@@ -26,7 +27,7 @@ class TgBot:
         # self.notifications = Notifications()
         self.dp = Dispatcher()
         self.rest = RestApi(rest_api_url, rest_api_key)
-        self.exceptions = [HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError]
+        self.exceptions = [HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError, ReadTimeout]
         self.setup_handlers()
         asyncio.run(self.start_polling())
         
@@ -84,7 +85,8 @@ class TgBot:
             
             # try:
             if (type(user) in self.exceptions):
-                msg = f"Произошла ошибка при попытке отправить запрос: {user}"
+                msg = f"Произошла ошибка при попытке отправить запрос"
+                print(user)
                 await self.bot.send_message(message.chat.id, msg)
                 return
             elif ('result' not in user):
@@ -115,11 +117,17 @@ class TgBot:
 
                         # Upload user avatar and send its relative path
                         tg_photo_file = await self.bot.get_file(tg_photo[0].file_id)
+                        print('TG PHOTO FILE: ' + str(tg_photo_file))
                         # File path usually looks like 'photos/%filename%', we take only %filename%
-                        tg_photo_file_path = tg_photo_file.file_path.split('/')[-1]
-                        tg_photo_url = str(tg_user.id) + '/' + tg_photo_file_path
+                        tg_photo_file_name = tg_photo_file.file_path.split('/')[-1]
+                        print('TG PHOTO NAME: ' + str(tg_photo_file_name))
+                        tg_photo_url = str(tg_user.id) + '/' + tg_photo_file_name
+                        print('TG PHOTO URL: ' + str(tg_photo_url))
+                        tg_photo_path = path.abspath(self.uploads_path + tg_photo_url)
+                        print('TG PHOTO LOCATION: ' + str(tg_photo_path))
+
                         makedirs(self.uploads_path + str(tg_user.id), exist_ok=True)
-                        await self.bot.download_file(tg_photo_file.file_path, self.uploads_path + tg_photo_url)
+                        await self.bot.download_file(tg_photo_file.file_path, tg_photo_path)
                         # tg_photo_file = await self.bot.get_file(tg_photo[0].file_id)
                         # if (tg_photo_file is not None and 'file_path' in tg_photo_file):
                         #     tg_photo_url = tg_photo_file.file_path
