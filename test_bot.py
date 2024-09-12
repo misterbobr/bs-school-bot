@@ -19,8 +19,9 @@ from lesson import Lesson
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError, ReadTimeout
 
 class TgBot:
-    def __init__(self, tg_api_key, rest_api_url, rest_api_key, uploads_path):
+    def __init__(self, tg_api_key, site_url, rest_api_url, rest_api_key, uploads_path):
         self.uploads_path = uploads_path
+        self.site_url = site_url
         self.bot = Bot(token=tg_api_key, default=DefaultBotProperties(
             parse_mode=ParseMode.HTML
         ))
@@ -95,9 +96,11 @@ class TgBot:
             
             if (user['result'] == 'true' and 'link' in user):
                 # User found in database
-                msg = f"Привет, {tg_user.first_name}! Твой личный кабинет: \n{user['link']}"
-                await self.bot.send_message(message.chat.id, msg)
-                await self.start_lessons(tg_user, user['link'])
+
+                # msg = f"Привет, {tg_user.first_name}! Твой личный кабинет: \n{self.site_url}{user['link']}"
+                # await self.bot.send_message(message.chat.id, msg)
+                await self.start_lessons(tg_user, self.site_url + user['link'])
+
                 # await self.video_message(tg_user.id, 'assets/videos/tgvideo')
                 # await self.push_1(tg_user.id)
             else:
@@ -135,27 +138,34 @@ class TgBot:
                     res = self.rest.register_user(start, tg_user.id, tg_user.first_name, tg_user.last_name, tg_user.username, tg_photo_url)
 
                     if (type(res) in self.exceptions):
-                        msg = f"Произошла ошибка при попытке отправить запрос: {res}"
+                        msg = f"Произошла ошибка при попытке отправить запрос"
+                        print(res.response.text)
                         await self.bot.send_message(message.chat.id, msg)
                         return
                     elif ('result' not in res):
-                        msg = f"Произошла ошибка при попытке отправить запрос. Пожалуйста, попробуйте снова"
+                        msg = f"Произошла ошибка при попытке отправить запрос"
+                        print('[ERROR]: ' + res)
                         await self.bot.send_message(message.chat.id, msg)
                         return
                     
                     if (res['result'] == 'success' and 'link' in res):
                         # User registered successfully
+
                         # Start 1st lesson
-                        await self.start_lessons(tg_user, res['link'])
+                        await self.start_lessons(tg_user, self.site_url + res['link'])
+                        # pass
+
                         # msg = self.notifications.lesson_1_0(tg_user.first_name, res['link'])
                         # await self.bot.send_message(message.chat.id, text=msg['text'], reply_markup=msg['markup'])
                         # await self.video_message(tg_user.id, 'assets/videos/tgvideo', 'mp4')
                         # await self.push_1(tg_user.id)
                     elif (res['result'] == 'failed' and 'error' in res):
                         msg = f"Произошла ошибка при регистрации: \n{res['error']}"
+                        print('[ERROR]: ' + res['error'])
                         await self.bot.send_message(message.chat.id, msg)
                     else:
-                        msg = f"Произошла неизвестная ошибка при регистрации. Пожалуйста, попробуйте снова"
+                        msg = f"Произошла неизвестная ошибка при регистрации"
+                        print('[ERROR]: ' + res)
                         await self.bot.send_message(message.chat.id, msg)
                         
                 else:

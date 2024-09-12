@@ -95,12 +95,12 @@ class RestApi:
             "Authorization": f"{self.api_key}"
         }
         payload = {
-            'submission_id': submission_id,
-            'tg_uid': tg_uid,
-            'first_name': tg_first_name,
-            'last_name': tg_last_name,
-            'username': tg_username,
-            'tg_picture': tg_picture
+            "submission_id": submission_id,
+            "tg_uid": tg_uid,
+            "first_name": tg_first_name,
+            "last_name": tg_last_name,
+            "username": tg_username,
+            "tg_picture": tg_picture
         }
         try:
             response = self.session.post(url, data=payload, headers=headers, timeout=20)
