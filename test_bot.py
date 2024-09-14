@@ -19,8 +19,10 @@ from lesson import Lesson
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError, ReadTimeout
 
 class TgBot:
-    def __init__(self, tg_api_key, site_url, rest_api_url, rest_api_key, uploads_path):
+    def __init__(self, tg_api_key, site_url, rest_api_url, rest_api_key, uploads_path, tg_course_chat_id, tg_channel_id):
         self.uploads_path = uploads_path
+        self.course_chat_id = tg_course_chat_id
+        self.channel_id = tg_channel_id
         self.site_url = site_url
         self.bot = Bot(token=tg_api_key, default=DefaultBotProperties(
             parse_mode=ParseMode.HTML
@@ -187,13 +189,22 @@ class TgBot:
 
         @self.dp.chat_member()
         async def new_chat_member(update: types.ChatMemberUpdated):
-            # print(update.new_chat_member.user)
-            # print('\n')
-            # print(update.new_chat_member.status)
+            print('\n')
+            print(update.chat)
+            print(update.new_chat_member.status)
+            print(update.new_chat_member.user)
+
+            ## User joined
             if (update.new_chat_member.status in ['member', 'administrator', 'creator']): # need just 'member', the others are for test
-                res = self.rest.user_subscription(update.new_chat_member.user.id)
-                # print('RESPONSE:\n')
-                # print(res)
+                if (str(update.chat.id) == self.course_chat_id):
+                    res = self.rest.user_joined_chat(update.new_chat_member.user.id)
+                elif (str(update.chat.id) == self.channel_id):
+                    res = self.rest.user_subscribed(update.new_chat_member.user.id)
+                else:
+                    return
+                
+                print('RESPONSE:')
+                print(res)
 
                 if ('result' not in res):
                     # REST request error
@@ -201,8 +212,42 @@ class TgBot:
                 
                 if (res['result'] == 'success'):
                     # User subscribed successfully
-                    msg = f"Благодарим вас за подписку на наш канал! Ваши бонусы уже в личном кабинете"
+                    if (str(update.chat.id) == self.course_chat_id):
+                        msg = f"Добро пожаловать в чат курса!"
+                    elif (str(update.chat.id) == self.channel_id):
+                        msg = f"Благодарим вас за подписку на наш канал! Ваши бонусы уже в личном кабинете"
                     await self.bot.send_message(update.new_chat_member.user.id, msg)
+                elif (res['result'] == 'failed'):
+                    # No user found or already subscribed
+                    return
+                else:
+                    # API returned unknown result (should not occur)
+                    return
+                
+            ## User left
+            elif (update.new_chat_member.status == 'left'):
+                if (str(update.chat.id) == self.course_chat_id):
+                    res = self.rest.user_left_chat(update.new_chat_member.user.id)
+                elif (str(update.chat.id) == self.channel_id):
+                    res = self.rest.user_ubsubscribed(update.new_chat_member.user.id)
+                else:
+                    return
+                
+                print('RESPONSE:\n')
+                print(res)
+
+                if ('result' not in res):
+                    # REST request error
+                    return
+                
+                if (res['result'] == 'success'):
+                    # User unsubscribed successfully
+                    if (str(update.chat.id) == self.course_chat_id):
+                        msg = f"Нам жаль, что вы покинули наш чат курса"
+                    elif (str(update.chat.id) == self.channel_id):
+                        msg = f"Жаль, что вы покинули наш канал"
+                    await self.bot.send_message(update.new_chat_member.user.id, msg)
+                    return
                 elif (res['result'] == 'failed'):
                     # No user found or already subscribed
                     return

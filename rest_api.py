@@ -116,20 +116,75 @@ class RestApi:
         except requests.exceptions.RequestException as err:
             return err
         
-    def user_subscription(self, uid):
-        url = self.api_url + f"/users/{uid}"
+    def user_joined_chat(self, uid):
+        url = self.api_url + f"/course/excel/users/{uid}/chat_join"
         headers = {
             "Authorization": f"{self.api_key}"
         }
-        payload = {
-            'subscribed': 1
+        try:
+            response = self.session.patch(url, headers=headers, timeout=20)
+            response.raise_for_status()
+            # print(response.text)
+            response = response.json()
+            return response
+        except requests.exceptions.HTTPError as errh:
+            return errh
+        except requests.exceptions.ConnectionError as errc:
+            return errc
+        except requests.exceptions.Timeout as errt:
+            return errt
+        except requests.exceptions.RequestException as err:
+            return err
+    def user_left_chat(self, uid):
+        url = self.api_url + f"/course/excel/users/{uid}/chat_leave"
+        headers = {
+            "Authorization": f"{self.api_key}"
         }
         try:
-            response = self.session.patch(url, data=payload, headers=headers, timeout=20)
+            response = self.session.patch(url, headers=headers, timeout=20)
             response.raise_for_status()
-            # check that response is number and greater than 0
+            # print(response.text)
             response = response.json()
-            return {'result': 'success'} if (type(response) == int and response > 0) else {'result': 'failed'} 
+            return response
+        except requests.exceptions.HTTPError as errh:
+            return errh
+        except requests.exceptions.ConnectionError as errc:
+            return errc
+        except requests.exceptions.Timeout as errt:
+            return errt
+        except requests.exceptions.RequestException as err:
+            return err
+        
+    def user_subscribed(self, uid):
+        url = self.api_url + f"/users/{uid}/subscribe"
+        headers = {
+            "Authorization": f"{self.api_key}"
+        }
+        try:
+            response = self.session.patch(url, headers=headers, timeout=20)
+            response.raise_for_status()
+            # print(response.text)
+            response = response.json()
+            return response
+        except requests.exceptions.HTTPError as errh:
+            return errh
+        except requests.exceptions.ConnectionError as errc:
+            return errc
+        except requests.exceptions.Timeout as errt:
+            return errt
+        except requests.exceptions.RequestException as err:
+            return err
+    def user_ubsubscribed(self, uid):
+        url = self.api_url + f"/users/{uid}/unsubscribe"
+        headers = {
+            "Authorization": f"{self.api_key}"
+        }
+        try:
+            response = self.session.patch(url, headers=headers, timeout=20)
+            response.raise_for_status()
+            # print(response.text)
+            response = response.json()
+            return response
         except requests.exceptions.HTTPError as errh:
             return errh
         except requests.exceptions.ConnectionError as errc:
