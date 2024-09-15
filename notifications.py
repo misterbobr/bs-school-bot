@@ -3,6 +3,7 @@ import asyncio
 from aiogram import types
 from aiogram.utils.media_group import MediaGroupBuilder
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+import logging
 
 class Notifications:
 
@@ -23,8 +24,9 @@ class Notifications:
                 f = open(file_name + ".txt", "r")
                 file_id = f.readline()
                 f.close()
+                
             except Exception as e:
-                print(e)
+                logging.exception(e)
             finally:
                 return file_id
             
@@ -33,50 +35,61 @@ class Notifications:
             f = open(file_name + ".txt", "w")
             f.write(file_id)
             f.close()
+
         except Exception as e:
-            print(e)
+            logging.exception(e)
             
     async def photo_message(self, uid, file_name):
-        file_id = self.read_local_file_id(file_name)
-        if (file_id):
-            result = await self.bot.bot.send_photo(uid, file_id)
-            # print('Reused File ID')
-        else:
-            photo = types.FSInputFile(file_name)
-            result = await self.bot.bot.send_photo(uid, photo)
-            file_id = result.photo[0].file_id
-            self.write_local_file_id(file_name, file_id)
-
-        # print('File ID: ' + file_id)
-
-    async def group_message(self, uid, files: list[str]):
-        media_group = MediaGroupBuilder()
-        for file_name in files:
-            file_id: str = self.read_local_file_id(file_name)
+        try:
+            file_id = self.read_local_file_id(file_name)
             if (file_id):
-                media_group.add_photo(media=file_id)
+                result = await self.bot.bot.send_photo(uid, file_id)
+                # print('Reused File ID')
             else:
                 photo = types.FSInputFile(file_name)
-                media_group.add_photo(media=photo)
-        result = await self.bot.bot.send_media_group(uid, media=media_group.build())
+                result = await self.bot.bot.send_photo(uid, photo)
+                file_id = result.photo[0].file_id
+                self.write_local_file_id(file_name, file_id)
+            # print('File ID: ' + file_id)
 
-        for i in range (0, len(result)):
-            file_id = result[i].photo[0].file_id
-            self.write_local_file_id(files[i], file_id)
-            # print(f"File {files[i]} ID: " + file_id)
+        except Exception as e:
+            logging.exception(e)
+
+    async def group_message(self, uid, files: list[str]):
+        try:
+            media_group = MediaGroupBuilder()
+            for file_name in files:
+                file_id: str = self.read_local_file_id(file_name)
+                if (file_id):
+                    media_group.add_photo(media=file_id)
+                else:
+                    photo = types.FSInputFile(file_name)
+                    media_group.add_photo(media=photo)
+            result = await self.bot.bot.send_media_group(uid, media=media_group.build())
+
+            for i in range (0, len(result)):
+                file_id = result[i].photo[0].file_id
+                self.write_local_file_id(files[i], file_id)
+                # print(f"File {files[i]} ID: " + file_id)
+
+        except Exception as e:
+            logging.exception(e)
 
     async def video_message(self, uid, file_name):
-        file_id = self.read_local_file_id(file_name)
-        if (file_id):
-            result = await self.bot.bot.send_video_note(uid, file_id)
-            # print('Reused File ID')
-        else:
-            video = types.FSInputFile(file_name)
-            result = await self.bot.bot.send_video_note(uid, video)
-            file_id = result.video_note.file_id if result.video_note else result.video.file_id
-            self.write_local_file_id(file_name, file_id)
+        try:
+            file_id = self.read_local_file_id(file_name)
+            if (file_id):
+                result = await self.bot.bot.send_video_note(uid, file_id)
+                # print('Reused File ID')
+            else:
+                video = types.FSInputFile(file_name)
+                result = await self.bot.bot.send_video_note(uid, video)
+                file_id = result.video_note.file_id if result.video_note else result.video.file_id
+                self.write_local_file_id(file_name, file_id)
+            # print('File ID: ' + file_id)
 
-        # print('File ID: ' + file_id)
+        except Exception as e:
+            logging.exception(e)
 
     ## LESSON 1 ##
 

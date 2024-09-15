@@ -1,6 +1,7 @@
 import asyncio
 from notifications import Notifications
 # from test_bot import TgBot
+import logging
 
 class Lesson:
     def __init__(self, bot, tg_user, lk_url: str, step_delays: list[int], step_lives: list[int], current_lesson: int, next_lesson=None):
@@ -42,7 +43,7 @@ class Lesson:
                     # print('CHECK Overdue')
                     return 'overdue'
             except Exception as e:
-                # print(e)
+                logging.exception(e)
                 return 'unknown'
             # print('CHECK False')
 
@@ -51,51 +52,58 @@ class Lesson:
     
     async def send_notification(self):
         # last step (24 hrs of inactivity)
-        if self.current_step >= len(self.step_delays) - 1:
-            if self.current_lesson == 4:
-                fun = "self.notifications.lesson_4_end()"
+        try:
+            if self.current_step >= len(self.step_delays) - 1:
+                if self.current_lesson == 4:
+                    fun = "self.notifications.lesson_4_end()"
+                else:
+                    fun = "self.notifications.lesson_inactive()"
             else:
-                fun = "self.notifications.lesson_inactive()"
-        else:
-            fun = "self.notifications.lesson_" + str(self.current_lesson) + "_" + str(self.current_step) + "()"
-        # print(fun)
-        await eval(fun)
+                fun = "self.notifications.lesson_" + str(self.current_lesson) + "_" + str(self.current_step) + "()"
+            # print(fun)
+            await eval(fun)
+        except Exception as e:
+            logging.exception(e)
     
     async def start_lesson(self, uid):
-        # Checking homework status until final step is reached
-        while self.current_step < len(self.step_delays):
-            status = await self.check_homework(uid, self.step_delays[self.current_step] * 60)
-            # Next step if hw not received/completed
-            if not status:
-                await self.next_step()
-            else:
-                # if hw completed, go to next lesson
-                if status == 'completed':
-                    # print('HW COMPLETED')
-                    fun = "self.notifications.lesson_done()"
-                    await eval(fun)
-                    if (self.current_lesson == 1):
-                        await asyncio.sleep(0.05 * 60)
-                        fun = "self.notifications.lesson_1_after_done()"
-                        await eval(fun)
-
-                    if (self.next_lesson):
-                        await self.next_lesson.start_lesson(uid)
-                    break
-
-                # if hw received, check its status every 5 min
-                elif status == 'received':
-                    # print('HW RECEIVED')
-                    await asyncio.sleep(0.3 * 60)
-
-                # if hw overdue, stop
-                elif status == 'overdue':
-                    # print('HW OVERDUE')
-                    await asyncio.sleep(0.3 * 60)
-                    return
-                
+        try:
+            # Checking homework status until final step is reached
+            while self.current_step < len(self.step_delays):
+                status = await self.check_homework(uid, self.step_delays[self.current_step] * 60)
+                # Next step if hw not received/completed
+                if not status:
+                    await self.next_step()
                 else:
-                    # print('HW UNKNOWN STATUS')
-                    await asyncio.sleep(0.5 * 60)
+                    # if hw completed, go to next lesson
+                    if status == 'completed':
+                        # print('HW COMPLETED')
+                        fun = "self.notifications.lesson_done()"
+                        await eval(fun)
+                        if (self.current_lesson == 1):
+                            await asyncio.sleep(0.05 * 60)
+                            fun = "self.notifications.lesson_1_after_done()"
+                            await eval(fun)
+
+                        if (self.next_lesson):
+                            await self.next_lesson.start_lesson(uid)
+                        break
+
+                    # if hw received, check its status every 5 min
+                    elif status == 'received':
+                        # print('HW RECEIVED')
+                        await asyncio.sleep(0.3 * 60)
+
+                    # if hw overdue, stop
+                    elif status == 'overdue':
+                        # print('HW OVERDUE')
+                        await asyncio.sleep(0.3 * 60)
+                        return
+                    
+                    else:
+                        # print('HW UNKNOWN STATUS')
+                        await asyncio.sleep(0.5 * 60)
+
+        except Exception as e:
+            logging.exception(e)
     
 # lesson_1 = Lesson([0,1,60,60,60,60, 60,60,240,120,480,240,1440])

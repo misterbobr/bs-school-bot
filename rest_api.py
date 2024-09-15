@@ -1,5 +1,6 @@
 import requests
 import json
+import logging
 
 class RestApi:
 
@@ -19,12 +20,16 @@ class RestApi:
             response = response.json()
             return response
         except requests.exceptions.HTTPError as errh:
+            logging.exception(errh)
             return errh
         except requests.exceptions.ConnectionError as errc:
+            logging.exception(errc)
             return errc
         except requests.exceptions.Timeout as errt:
+            logging.exception(errt)
             return errt
         except requests.exceptions.RequestException as err:
+            logging.exception(err)
             return err
         
     def user_visited_lk(self, uid):
@@ -38,12 +43,16 @@ class RestApi:
             response = response.json()
             return {'result': 'true'} if ('visited' in response and response['visited'] is not None) else {'result': 'false'} 
         except requests.exceptions.HTTPError as errh:
+            logging.exception(errh)
             return errh
         except requests.exceptions.ConnectionError as errc:
+            logging.exception(errc)
             return errc
         except requests.exceptions.Timeout as errt:
+            logging.exception(errt)
             return errt
         except requests.exceptions.RequestException as err:
+            logging.exception(err)
             return err
         
     def get_user_lessons(self, uid):
@@ -57,12 +66,16 @@ class RestApi:
             response = response.json()
             return response
         except requests.exceptions.HTTPError as errh:
+            logging.exception(errh)
             return errh
         except requests.exceptions.ConnectionError as errc:
+            logging.exception(errc)
             return errc
         except requests.exceptions.Timeout as errt:
+            logging.exception(errt)
             return errt
         except requests.exceptions.RequestException as err:
+            logging.exception(err)
             return err
         
     def new_submission(self, name, phone, email):
@@ -81,12 +94,16 @@ class RestApi:
             response = response.json()
             return response
         except requests.exceptions.HTTPError as errh:
+            logging.exception(errh)
             return errh
         except requests.exceptions.ConnectionError as errc:
+            logging.exception(errc)
             return errc
         except requests.exceptions.Timeout as errt:
+            logging.exception(errt)
             return errt
         except requests.exceptions.RequestException as err:
+            logging.exception(err)
             return err
 
     def register_user(self, submission_id, tg_uid, tg_first_name, tg_last_name, tg_username, tg_picture):
@@ -108,12 +125,16 @@ class RestApi:
             response = response.json()
             return response
         except requests.exceptions.HTTPError as errh:
+            logging.exception(errh)
             return errh
         except requests.exceptions.ConnectionError as errc:
+            logging.exception(errc)
             return errc
         except requests.exceptions.Timeout as errt:
+            logging.exception(errt)
             return errt
         except requests.exceptions.RequestException as err:
+            logging.exception(err)
             return err
         
     def user_joined_chat(self, uid):
@@ -128,12 +149,16 @@ class RestApi:
             response = response.json()
             return response
         except requests.exceptions.HTTPError as errh:
+            logging.exception(errh)
             return errh
         except requests.exceptions.ConnectionError as errc:
+            logging.exception(errc)
             return errc
         except requests.exceptions.Timeout as errt:
+            logging.exception(errt)
             return errt
         except requests.exceptions.RequestException as err:
+            logging.exception(err)
             return err
     def user_left_chat(self, uid):
         url = self.api_url + f"/course/excel/users/{uid}/chat_leave"
@@ -147,12 +172,16 @@ class RestApi:
             response = response.json()
             return response
         except requests.exceptions.HTTPError as errh:
+            logging.exception(errh)
             return errh
         except requests.exceptions.ConnectionError as errc:
+            logging.exception(errc)
             return errc
         except requests.exceptions.Timeout as errt:
+            logging.exception(errt)
             return errt
         except requests.exceptions.RequestException as err:
+            logging.exception(err)
             return err
         
     def user_subscribed(self, uid):
@@ -167,12 +196,16 @@ class RestApi:
             response = response.json()
             return response
         except requests.exceptions.HTTPError as errh:
+            logging.exception(errh)
             return errh
         except requests.exceptions.ConnectionError as errc:
+            logging.exception(errc)
             return errc
         except requests.exceptions.Timeout as errt:
+            logging.exception(errt)
             return errt
         except requests.exceptions.RequestException as err:
+            logging.exception(err)
             return err
     def user_ubsubscribed(self, uid):
         url = self.api_url + f"/users/{uid}/unsubscribe"
@@ -186,10 +219,14 @@ class RestApi:
             response = response.json()
             return response
         except requests.exceptions.HTTPError as errh:
+            logging.exception(errh)
             return errh
         except requests.exceptions.ConnectionError as errc:
+            logging.exception(errc)
             return errc
         except requests.exceptions.Timeout as errt:
+            logging.exception(errt)
             return errt
         except requests.exceptions.RequestException as err:
+            logging.exception(err)
             return err
