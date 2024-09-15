@@ -31,7 +31,7 @@ class Lesson:
             try:
                 # lesson = lessons[-1]
                 lesson = lessons[self.current_lesson - 1]
-                print(lesson)
+                # print(lesson)
                 if (lesson['completed']):
                     # print('CHECK Completed')
                     return 'completed'
@@ -42,9 +42,9 @@ class Lesson:
                     # print('CHECK Overdue')
                     return 'overdue'
             except Exception as e:
-                print(e)
+                # print(e)
                 return 'unknown'
-            print('CHECK False')
+            # print('CHECK False')
 
         # If not received/completed after delay
         return False
@@ -58,7 +58,7 @@ class Lesson:
                 fun = "self.notifications.lesson_inactive()"
         else:
             fun = "self.notifications.lesson_" + str(self.current_lesson) + "_" + str(self.current_step) + "()"
-        print(fun)
+        # print(fun)
         await eval(fun)
     
     async def start_lesson(self, uid):
@@ -71,7 +71,7 @@ class Lesson:
             else:
                 # if hw completed, go to next lesson
                 if status == 'completed':
-                    print('HW COMPLETED')
+                    # print('HW COMPLETED')
                     fun = "self.notifications.lesson_done()"
                     await eval(fun)
                     if (self.current_lesson == 1):
@@ -85,17 +85,17 @@ class Lesson:
 
                 # if hw received, check its status every 5 min
                 elif status == 'received':
-                    print('HW RECEIVED')
+                    # print('HW RECEIVED')
                     await asyncio.sleep(0.3 * 60)
 
                 # if hw overdue, stop
                 elif status == 'overdue':
-                    print('HW OVERDUE')
+                    # print('HW OVERDUE')
                     await asyncio.sleep(0.3 * 60)
                     return
                 
                 else:
-                    print('HW UNKNOWN STATUS')
+                    # print('HW UNKNOWN STATUS')
                     await asyncio.sleep(0.5 * 60)
     
 # lesson_1 = Lesson([0,1,60,60,60,60, 60,60,240,120,480,240,1440])

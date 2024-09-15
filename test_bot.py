@@ -38,26 +38,6 @@ class TgBot:
         # Extracts the parameter value from the sent /start command.
         return text.split()[1] if len(text.split()) > 1 else None
 
-    async def delayed_push(self, uid):
-        now = datetime.datetime.time(datetime.datetime.now())
-        msg = f"Start command at {now}: "
-
-        try:
-            await asyncio.sleep(10) # wait some time
-            visited = self.rest.user_visited_lk(uid) # check if user has visited lk
-            if ('result' not in visited):
-                pass    # TODO process possible errors in request to api
-                return
-            if (visited['result'] == 'true'):
-                msg += "VISITED"
-            else:
-                msg += "NOT VISITED"
-            await self.bot.send_message(uid, msg)
-        
-        except Exception as e:
-            msg = "Exception occured: " + e
-            await self.bot.send_message(uid, msg)
-
     async def start_lessons(self, tg_user: types.User, lk_url: str):
         # lesson_4 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 4)
         # lesson_3 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 3, lesson_4)
@@ -110,8 +90,8 @@ class TgBot:
                 start = self.get_start_param(message.text)
                 if (start):
                     # Has start param
-                    msg = f"Добро пожаловать, {tg_user.first_name}! Сейчас мы зарегистрируем вас и пришлём ссылку на вашу личную страницу"
-                    await self.bot.send_message(message.chat.id, msg)
+                    msg = f"Добро пожаловать, {tg_user.first_name}! Сейчас мы зарегистрируем тебя и пришлём ссылку на вашу личную страницу"
+                    # await self.bot.send_message(message.chat.id, msg)
 
                     # Get user profile photo
                     photos_data = await self.bot.get_user_profile_photos(tg_user.id, limit=1)
@@ -162,7 +142,7 @@ class TgBot:
                         # await self.video_message(tg_user.id, 'assets/videos/tgvideo', 'mp4')
                         # await self.push_1(tg_user.id)
                     elif (res['result'] == 'failed' and 'error' in res):
-                        msg = f"Произошла ошибка при регистрации: \n{res['error']}"
+                        msg = f"Произошла ошибка при регистрации"
                         print('[ERROR]: ' + res['error'])
                         await self.bot.send_message(message.chat.id, msg)
                     else:
@@ -173,19 +153,19 @@ class TgBot:
                 else:
                     # No start param
                     msg = f"Пожалуйста, пройдите регистрацию на странице ..."
-                    await self.bot.send_message(message.chat.id, msg)
+                    # await self.bot.send_message(message.chat.id, msg)
         
             # except Exception as e:
             #     print(e)
                 
 
-        @self.dp.message(F.text)
-        async def text_message(message: types.Message):
-            now = datetime.datetime.time(datetime.datetime.now())
-            msg = f"{now}: {message.text}"
-            await asyncio.sleep(5)
-            await self.bot.send_message(message.chat.id, msg)
-            pass
+        # @self.dp.message(F.text)
+        # async def text_message(message: types.Message):
+        #     now = datetime.datetime.time(datetime.datetime.now())
+        #     msg = f"{now}: {message.text}"
+        #     await asyncio.sleep(3)
+        #     await self.bot.send_message(message.chat.id, msg)
+        #     pass
 
         @self.dp.chat_member()
         async def new_chat_member(update: types.ChatMemberUpdated):
@@ -215,8 +195,9 @@ class TgBot:
                     if (str(update.chat.id) == self.course_chat_id):
                         msg = f"Добро пожаловать в чат курса!"
                     elif (str(update.chat.id) == self.channel_id):
-                        msg = f"Благодарим вас за подписку на наш канал! Ваши бонусы уже в личном кабинете"
-                    await self.bot.send_message(update.new_chat_member.user.id, msg)
+                        msg = f"Благодарим за подписку на наш канал! Твои бонусы уже в личном кабинете"
+
+                    # await self.bot.send_message(update.new_chat_member.user.id, msg)
                 elif (res['result'] == 'failed'):
                     # No user found or already subscribed
                     return
@@ -246,7 +227,8 @@ class TgBot:
                         msg = f"Нам жаль, что вы покинули наш чат курса"
                     elif (str(update.chat.id) == self.channel_id):
                         msg = f"Жаль, что вы покинули наш канал"
-                    await self.bot.send_message(update.new_chat_member.user.id, msg)
+
+                    # await self.bot.send_message(update.new_chat_member.user.id, msg)
                     return
                 elif (res['result'] == 'failed'):
                     # No user found or already subscribed
