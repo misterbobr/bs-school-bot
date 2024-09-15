@@ -4,7 +4,7 @@ from os import makedirs, path
 import os
 
 import asyncio
-import logging
+from logger import logger
 from aiogram import Bot, Dispatcher, types, enums
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.filters.command import Command
@@ -60,7 +60,7 @@ class TgBot:
             lesson_1 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05], [], 1, lesson_2)
             await eval(f"lesson_{current_lesson}.start_lesson({tg_user.id})")
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
 
     def setup_handlers(self):
         ### start command - act according to user registration status
@@ -159,7 +159,7 @@ class TgBot:
                         # await self.bot.send_message(message.chat.id, msg)
         
             except Exception as e:
-                logging.exception(e)
+                logger.exception(e)
                 
 
         # @self.dp.message(F.text)
@@ -242,7 +242,7 @@ class TgBot:
                         return
 
             except Exception as e:
-                logging.exception(e)
+                logger.exception(e)
 
     async def start_polling(self):
         await self.dp.start_polling(self.bot)

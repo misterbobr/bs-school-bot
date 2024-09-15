@@ -3,7 +3,7 @@ import asyncio
 from aiogram import types
 from aiogram.utils.media_group import MediaGroupBuilder
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-import logging
+from logger import logger
 
 class Notifications:
 
@@ -24,9 +24,9 @@ class Notifications:
                 f = open(file_name + ".txt", "r")
                 file_id = f.readline()
                 f.close()
-                
+
             except Exception as e:
-                logging.exception(e)
+                logger.exception(e)
             finally:
                 return file_id
             
@@ -37,7 +37,7 @@ class Notifications:
             f.close()
 
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
             
     async def photo_message(self, uid, file_name):
         try:
@@ -53,7 +53,7 @@ class Notifications:
             # print('File ID: ' + file_id)
 
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
 
     async def group_message(self, uid, files: list[str]):
         try:
@@ -73,7 +73,7 @@ class Notifications:
                 # print(f"File {files[i]} ID: " + file_id)
 
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
 
     async def video_message(self, uid, file_name):
         try:
@@ -89,7 +89,7 @@ class Notifications:
             # print('File ID: ' + file_id)
 
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
 
     ## LESSON 1 ##
 

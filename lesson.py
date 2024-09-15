@@ -1,7 +1,7 @@
 import asyncio
 from notifications import Notifications
 # from test_bot import TgBot
-import logging
+from logger import logger
 
 class Lesson:
     def __init__(self, bot, tg_user, lk_url: str, step_delays: list[int], step_lives: list[int], current_lesson: int, next_lesson=None):
@@ -43,7 +43,7 @@ class Lesson:
                     # print('CHECK Overdue')
                     return 'overdue'
             except Exception as e:
-                logging.exception(e)
+                logger.exception(e)
                 return 'unknown'
             # print('CHECK False')
 
@@ -63,7 +63,7 @@ class Lesson:
             # print(fun)
             await eval(fun)
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
     
     async def start_lesson(self, uid):
         try:
@@ -104,6 +104,6 @@ class Lesson:
                         await asyncio.sleep(0.5 * 60)
 
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
     
 # lesson_1 = Lesson([0,1,60,60,60,60, 60,60,240,120,480,240,1440])
