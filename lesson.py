@@ -19,15 +19,17 @@ class Lesson:
     async def next_step(self):
         await self.send_notification()
         self.current_step += 1
+        self.delay = self.step_delays[self.current_step]
 
     async def check_homework(self, uid, delay):
         # Check every %interval% seconds
-        interval = 1
+        interval = 5
         elapsed = 0
         while elapsed < delay or elapsed == 0:
             await asyncio.sleep(interval)
             elapsed += interval
-            
+            print('Time left: ' + str(delay - elapsed) + ' sec')
+
             lessons: list = self.bot.rest.get_user_lessons(uid)
             try:
                 # lesson = lessons[-1]
@@ -65,11 +67,13 @@ class Lesson:
         except Exception as e:
             logger.exception(e)
     
-    async def start_lesson(self, uid):
+    async def start_lesson(self, uid, current_step=0, delay=0):
+        self.current_step = current_step
+        self.delay = delay
         try:
             # Checking homework status until final step is reached
             while self.current_step < len(self.step_delays):
-                status = await self.check_homework(uid, self.step_delays[self.current_step] * 60)
+                status = await self.check_homework(uid, self.delay * 60)
                 # Next step if hw not received/completed
                 if not status:
                     await self.next_step()

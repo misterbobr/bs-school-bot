@@ -12,8 +12,8 @@ from aiogram import F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 import io
+import time
 from rest_api import RestApi
-# from notifications import Notifications
 from lesson import Lesson
 
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError, ReadTimeout
@@ -27,7 +27,6 @@ class TgBot:
         self.bot = Bot(token=tg_api_key, default=DefaultBotProperties(
             parse_mode=ParseMode.HTML
         ))
-        # self.notifications = Notifications()
         self.dp = Dispatcher()
         self.rest = RestApi(rest_api_url, rest_api_key)
         self.exceptions = [HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError, ReadTimeout]
@@ -39,28 +38,54 @@ class TgBot:
         return text.split()[1] if len(text.split()) > 1 else None
 
     async def start_lessons(self, tg_user: types.User, lk_url: str):
-        # lesson_4 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 4)
-        # lesson_3 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 3, lesson_4)
-        # lesson_2 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 2, lesson_3)
-        # lesson_1 = Lesson(self, tg_user, lk_url, [0,1,2,2,2,2, 2,2,4,3,6,3,10], [], 1, lesson_2)
+        lesson_timings = [
+            # [0.1,2,58,60,60,60, 60,60,240,120,480,240,1440],
+            [0.05,0.02,0.02,0.02,0.02,         0.02,0.02,0.02,0.02,0.02,0.05],
+            [0.05,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.05],
+            [0.05,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05],
+            [0.05,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05]
+        ]
 
         try:
             ## Find last completed lesson
-            current_lesson = 1
-            current_message = 0
+            current_lesson = 0
             lessons: list = self.rest.get_user_lessons(tg_user.id)
             for lesson in lessons:
-                if (lesson['completed']):
+                if (lesson['completed'] and current_lesson + 1 < len(lessons)):
                     current_lesson += 1
                 else:
                     break
+            print('Current lesson: ' + str(current_lesson + 1))
+                
+            ## Define next message based on deadline time
+            current_step = len(lesson_timings[current_lesson]) - 1
+            time_dl = time.strptime(lessons[current_lesson]['deadline'], '%Y-%m-%d %H:%M:%S')
+            # mins till deadline
+            mins_left = (time.mktime(time_dl) - time.time()) / 60
+            # add last step delay because it's after deadline
+            mins_left += lesson_timings[current_lesson][-1]
+            mins_sum = 0
+            while True:
+                mins_sum += lesson_timings[current_lesson][current_step]
+                if mins_sum >= mins_left or current_step == 0:
+                    break
+                current_step -= 1
 
-            lesson_4 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,         0.02,0.02,0.02,0.02,0.02,0.05], [], 4)
-            lesson_3 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.05], [], 3, lesson_4)
-            lesson_2 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05], [], 2, lesson_3)
-            lesson_1 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05], [], 1, lesson_2)
-            # lesson_1 = Lesson([0,1,59,60,60,60, 60,60,240,120,480,240,1440])
-            await eval(f"lesson_{current_lesson}.start_lesson({tg_user.id})")
+            # elapsed since current step
+            mins_elspsed = mins_sum - mins_left
+            mins_delay = lesson_timings[current_lesson][current_step] - mins_elspsed
+
+            lesson_4 = Lesson(self, tg_user, lk_url, lesson_timings[3], [], 4)
+            lesson_3 = Lesson(self, tg_user, lk_url, lesson_timings[2], [], 3, lesson_4)
+            lesson_2 = Lesson(self, tg_user, lk_url, lesson_timings[1], [], 2, lesson_3)
+            lesson_1 = Lesson(self, tg_user, lk_url, lesson_timings[0], [], 1, lesson_2)
+            # lesson_1 = Lesson(self, tg_user, lk_url, lesson_timings[0], [], 1)
+            print('Current step: ' + str(current_step))
+            print('Mins left: ' + str(mins_left))
+            print('Mins sum: ' + str(mins_sum))
+            print('Mins delay: ' + str(mins_delay))
+            print('\n')
+            await eval(f"lesson_{current_lesson + 1}.start_lesson({tg_user.id}, {current_step}, {mins_delay})")
         except Exception as e:
             logger.exception(e)
 
@@ -170,7 +195,7 @@ class TgBot:
 
         # Handle user messages in course chat
         @self.dp.channel_post()
-        async def text_message(channel_post: types.Message):
+        async def chat_message(channel_post: types.Message):
             try:
                 if (str(channel_post.chat.id) == self.course_chat_id):
                     if (channel_post.from_user):
@@ -178,7 +203,7 @@ class TgBot:
                         res = self.rest.user_joined_chat(channel_post.from_user.id)
                         # print('RESPONSE:')
                         # print(res)
-                        
+
             except Exception as e:
                 logger.exception(e)
 
