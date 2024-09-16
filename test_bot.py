@@ -166,11 +166,21 @@ class TgBot:
 
         # @self.dp.message(F.text)
         # async def text_message(message: types.Message):
-        #     now = datetime.datetime.time(datetime.datetime.now())
-        #     msg = f"{now}: {message.text}"
-        #     await asyncio.sleep(3)
-        #     await self.bot.send_message(message.chat.id, msg)
-        #     pass
+        #     print(message.chat.id)
+
+        # Handle user messages in course chat
+        @self.dp.channel_post()
+        async def text_message(channel_post: types.Message):
+            try:
+                if (str(channel_post.chat.id) == self.course_chat_id):
+                    if (channel_post.from_user):
+                        # print('From: ' + str(channel_post.from_user.id))
+                        res = self.rest.user_joined_chat(channel_post.from_user.id)
+                        # print('RESPONSE:')
+                        # print(res)
+                        
+            except Exception as e:
+                logger.exception(e)
 
         @self.dp.chat_member()
         async def new_chat_member(update: types.ChatMemberUpdated):
@@ -182,9 +192,7 @@ class TgBot:
             ## User joined
             try:
                 if (update.new_chat_member.status in ['member', 'administrator', 'creator']): # need just 'member', the others are for test
-                    if (str(update.chat.id) == self.course_chat_id):
-                        res = self.rest.user_joined_chat(update.new_chat_member.user.id)
-                    elif (str(update.chat.id) == self.channel_id):
+                    if (str(update.chat.id) == self.channel_id):
                         res = self.rest.user_subscribed(update.new_chat_member.user.id)
                     else:
                         return
@@ -213,10 +221,11 @@ class TgBot:
                     
                 ## User left
                 elif (update.new_chat_member.status == 'left'):
-                    if (str(update.chat.id) == self.course_chat_id):
-                        res = self.rest.user_left_chat(update.new_chat_member.user.id)
-                    elif (str(update.chat.id) == self.channel_id):
+                    if (str(update.chat.id) == self.channel_id):
                         res = self.rest.user_ubsubscribed(update.new_chat_member.user.id)
+                    ## We don't check users leaving chat
+                    # elif (str(update.chat.id) == self.course_chat_id):
+                    #     res = self.rest.user_left_chat(update.new_chat_member.user.id)
                     else:
                         return
                     
@@ -237,7 +246,7 @@ class TgBot:
                         # await self.bot.send_message(update.new_chat_member.user.id, msg)
                         return
                     elif (res['result'] == 'failed'):
-                        # No user found or already subscribed
+                        # No user found
                         return
                     else:
                         # API returned unknown result (should not occur)
