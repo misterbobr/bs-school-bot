@@ -11,7 +11,12 @@ class Notifications:
     def __init__(self, bot, tg_user: types.User, lk_url: str):
         self.bot = bot
         self.tg_user = tg_user
-        self.lk_url = lk_url
+        self.urls = {
+            'lk': lk_url,
+            'renat': 'https://t.me/renatshagabutdinov',
+            'chat': 'https://t.me/pivottables_bs',
+            'yandex': ''
+        }
     #     self.session = requests.Session()
 
     ## UTILITY FUNCTIONS ##
@@ -117,7 +122,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Начать обучение',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.video_message(self.tg_user.id, 'assets/videos/circles/1.mov')
@@ -138,7 +143,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Забрать гайд',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         photos = [
@@ -161,7 +166,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Прочитать больше отзывов',
-            url="https://yandex.ru")
+            url=self.urls['yandex'])
         )
         
         photos = [
@@ -189,7 +194,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Бегу смотреть',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/presents.png')
@@ -209,7 +214,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Посмотреть первый урок',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.video_message(self.tg_user.id, 'assets/videos/circles/2.mov')
@@ -230,11 +235,11 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Посмотреть урок',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         builder.row(types.InlineKeyboardButton(
             text='Сдать ДЗ Ренату',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
         
         await self.video_message(self.tg_user.id, 'assets/videos/circles/3.mov')
@@ -256,7 +261,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Выполнить первое задание',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/presents.png')
@@ -285,7 +290,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Иду на урок',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/lives-1.png')
@@ -306,7 +311,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Иду смотреть',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/1-5.png')
@@ -326,11 +331,11 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Сохраниться на курсе',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         builder.row(types.InlineKeyboardButton(
             text='Сдать ДЗ',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/lives-2.png')
@@ -349,7 +354,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Иду смотреть первый урок',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/1-6.png')
@@ -373,11 +378,11 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Выполнить задание 1/3',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         builder.row(types.InlineKeyboardButton(
             text='Получить персональную консультацию',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/lives-3.png')
@@ -393,7 +398,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Посмотреть урок',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
 
         await self.video_message(self.tg_user.id, 'assets/videos/screencasts/2.mp4')
@@ -416,7 +421,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Хочу разобраться с таблицами',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/2-1.png')
@@ -434,7 +439,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Научиться строить сводные',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         photos = [
@@ -462,7 +467,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Посмотреть урок',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/2-6.png')
@@ -479,7 +484,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Разобраться с таблицами',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.video_message(self.tg_user.id, 'assets/videos/circles/4.mov')
@@ -499,7 +504,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Посмотреть урок и сдать дз',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.video_message(self.tg_user.id, 'assets/videos/circles/5.mov')
@@ -515,15 +520,24 @@ class Notifications:
                 ' \n3) получить пошаговый план по тому, КАКИЕ именно действия предпринимать, чтобы не'\
                 ' путаться и не паниковать при работе с таблицами;'\
                 ' \n4) практиковаться и получать подробные разборы ошибок</i>'\
-                ' \n\n<b>Мы закрываем все эти потребности, а Ренат ждёт тебя в личке, чтобы посмотреть'\
-                ' твои домашки</b>'
+                ' \n\n<b>Всё это мы даём на нашем мини-курсе❤️</b>'\
+                ' \n\nИ просто посмотри, что можно делать на основе сводных👆 до: большая таблица,'\
+                ' в которой с первого взгляда сложно что-то понять, а после: понятная визуалиазация,'\
+                ' потому что на основе сводных можно делать вот такие небольшие дашборды для своих отчётов.'\
+                ' \n\nЗа эту универсальность мы и любим сводные, так что продолжай смотреть уроки, чтобы освоить их'\
+                ' на максимум и понять потенциал этого инструмента! (P.S.: 🔥до сгорания первой жизни осталось 29 минут🔥)'
+                
         
         builder.row(types.InlineKeyboardButton(
             text='Сдать дз Ренату',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
         
-        await self.photo_message(self.tg_user.id, 'assets/images/2-7.png')
+        photos = [
+            'assets/images/2-7.png',
+            'assets/images/2-8.png'
+        ]
+        await self.group_message(self.tg_user.id, photos)
         await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_2_6(self):
@@ -538,7 +552,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Сохранить жизни',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/lives-1.png')
@@ -563,8 +577,8 @@ class Notifications:
                 ' \n🔥<b>До сгорания второй жизни осталось 2 часа 59 минут</b>🔥'
         
         builder.row(types.InlineKeyboardButton(
-            text='Выполнить задание 2/3',
-            url=self.lk_url)
+            text='Сохранить за собой все подарки',
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/presents.png')
@@ -581,7 +595,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Выполнить задание 2/3',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/lives-2.png')
@@ -600,7 +614,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Бегу смотреть',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.video_message(self.tg_user.id, 'assets/videos/circles/6.mov')
@@ -619,10 +633,10 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Хочу как Ольга',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
-        await self.photo_message(self.tg_user.id, 'assets/images/2-8.png')
+        await self.photo_message(self.tg_user.id, 'assets/images/2-9.png')
         await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_2_11(self):
@@ -641,11 +655,11 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Выполнить задание 2/3',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         builder.row(types.InlineKeyboardButton(
             text='Получить персональную консультацию по курсу',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/lives-3.png')
@@ -672,7 +686,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Смотреть 3й урок',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.video_message(self.tg_user.id, 'assets/videos/screencasts/3.mov')
@@ -697,7 +711,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Продолжить изучение сводных таблиц',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/3-1.png')
@@ -719,7 +733,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Посмотреть урок 3/4',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/2-4.png') # 2-4 is correct
@@ -742,11 +756,11 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Посмотреть новый урок',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         builder.row(types.InlineKeyboardButton(
-            text='Сдать домашку Ренату на разб',
-            url=self.lk_url)
+            text='Сдать домашку Ренату на разбор',
+            url=self.urls['renat'])
         )
         
         await self.video_message(self.tg_user.id, 'assets/videos/circles/7.mov')
@@ -766,7 +780,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Хочу так же, иду смотреть урок 3/4',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         photos = [
@@ -798,11 +812,11 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Посмотреть урок 3/4',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         builder.row(types.InlineKeyboardButton(
             text='Сдать дз Ренату',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
         
         photos = [
@@ -824,7 +838,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Сохранить жизни',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/lives-1.png')
@@ -841,17 +855,17 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Выполнить доп. задание',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )        
         builder.row(types.InlineKeyboardButton(
             text='Продолжить смотреть уроки',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         photos = [
-            'assets/images/achiv-1.png',
-            'assets/images/achiv-2.png',
-            'assets/images/achiv-3.png'
+            'assets/images/achiv-1.jpg',
+            'assets/images/achiv-2.jpg',
+            'assets/images/achiv-3.jpg'
         ]
         await self.group_message(self.tg_user.id, photos)
         await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
@@ -866,8 +880,8 @@ class Notifications:
                 ' задание'
         
         builder.row(types.InlineKeyboardButton(
-            text='Выполнить задание 2/3',
-            url=self.lk_url)
+            text='Выполнить задание 3/4',
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/lives-2.png')
@@ -886,7 +900,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Бегу смотреть',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
@@ -906,12 +920,12 @@ class Notifications:
                 ' получить персональную консультацию"</b>'
         
         builder.row(types.InlineKeyboardButton(
-            text='Выполнить задание 3/3',
-            url=self.lk_url)
+            text='Выполнить задание 3/4',
+            url=self.urls['lk'])
         )
         builder.row(types.InlineKeyboardButton(
             text='Получить персональную консультацию',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/lives-3.png')
@@ -932,7 +946,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Иду смотреть финальный урок и забирать подарки',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.video_message(self.tg_user.id, 'assets/videos/screencasts/4.mov')
@@ -954,11 +968,11 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Бегу смотреть',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         builder.row(types.InlineKeyboardButton(
             text='Написать Ренату',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
         
         await self.video_message(self.tg_user.id, 'assets/videos/circles/8.mov')
@@ -983,8 +997,8 @@ class Notifications:
                 ' накопить!</b>'
         
         builder.row(types.InlineKeyboardButton(
-            text='Хочу также как Дмитрий',
-            url=self.lk_url)
+            text='Хочу так же как Дмитрий',
+            url='https://bonnieandslide.com/kursy/excel-pro')
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/4-1.png')
@@ -1002,7 +1016,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Хочу узнать подробнее',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/4-2.png')
@@ -1021,11 +1035,11 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Посмотреть урок 4/4',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         builder.row(types.InlineKeyboardButton(
             text='Получить персональную консультацию',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/4-3.png')
@@ -1043,8 +1057,8 @@ class Notifications:
                 ' \n\nЕсли у тебя есть вопросы, ты можешь написать в личку Ренату, и он поможет тебе'
         
         builder.row(types.InlineKeyboardButton(
-            text='Задать вопрос',
-            url=self.lk_url)
+            text='Воспользоваться скидкой',
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/4-4.png')
@@ -1063,11 +1077,11 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Посмотреть финальный урок',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         builder.row(types.InlineKeyboardButton(
             text='Забронировать место на курсе',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         photos = [
@@ -1093,7 +1107,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Хочу на курс',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
 
         await self.photo_message(self.tg_user.id, 'assets/images/4-9.png')
@@ -1128,7 +1142,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Занять место на курсе',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
 
         await self.photo_message(self.tg_user.id, 'assets/images/4-10.png')
@@ -1138,19 +1152,17 @@ class Notifications:
         builder = InlineKeyboardBuilder()
         msg =   'Ну что ж, осталось всего 59 минут для того, чтобы воспользоваться накопленными'\
                 ' бонусами и забронировать место на нашем курсе по лучшей цене.'\
-                ' \n\nРебята, которые уже купили курс, делятся в личке с Ренатом, почему приняли такое'\
-                ' решение'\
                 ' \n\n<b>Если тебя что-то останавливает, можешь поделиться с Ренатом, что именно - или'\
                 ' просто оставить заявку, чтобы сохранить за собой место по лучшей цене и получить'\
                 ' ответы на все волнующие вопросы</b>👐'
         
         builder.row(types.InlineKeyboardButton(
             text='Поговорить с Ренатом',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
         builder.row(types.InlineKeyboardButton(
             text='Сохранить за собой место по лучшей цене',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
 
         # await self.photo_message(self.tg_user.id, 'assets/images/.png')
@@ -1167,11 +1179,11 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Получить последний шанс на скидку',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         builder.row(types.InlineKeyboardButton(
             text='Поделиться обратной связью',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
 
         await self.photo_message(self.tg_user.id, 'assets/images/4-11.png')
@@ -1187,18 +1199,6 @@ class Notifications:
 
         await self.photo_message(self.tg_user.id, 'assets/images/4-12.png')
         await self.bot.bot.send_message(self.tg_user.id, text=msg)
-    
-    async def lesson_4_30min(self):
-        builder = InlineKeyboardBuilder()
-        msg =   'У ТЕБЯ ЕСТЬ РОВНО 30 МИНУТ САМОЙ ГОРЯЧЕЙ СКИДКИ! УСПЕЙ ОСТАВИТЬ ЗАЯВКУ🏁'
-        
-        builder.row(types.InlineKeyboardButton(
-            text='Бегу!',
-            url=self.lk_url)
-        )
-
-        await self.photo_message(self.tg_user.id, 'assets/images/4-13.png')
-        await self.bot.bot.send_message(self.tg_user.id, text=msg, reply_markup=builder.as_markup())
 
 
     ## GENERAL NOTIFICATIONS ##
@@ -1216,7 +1216,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Оставить обратную связь и забрать подарок',
-            url=self.lk_url)
+            url=self.urls['lk'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/inactive.png')
@@ -1231,7 +1231,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Написать отзыв',
-            url=self.lk_url)
+            url=self.urls['renat'])
         )
         
         await self.photo_message(self.tg_user.id, 'assets/images/done.png')

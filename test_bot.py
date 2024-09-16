@@ -47,6 +47,7 @@ class TgBot:
         try:
             ## Find last completed lesson
             current_lesson = 1
+            current_message = 0
             lessons: list = self.rest.get_user_lessons(tg_user.id)
             for lesson in lessons:
                 if (lesson['completed']):
@@ -58,6 +59,7 @@ class TgBot:
             lesson_3 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.05], [], 3, lesson_4)
             lesson_2 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05], [], 2, lesson_3)
             lesson_1 = Lesson(self, tg_user, lk_url, [0.02,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05], [], 1, lesson_2)
+            # lesson_1 = Lesson([0,1,59,60,60,60, 60,60,240,120,480,240,1440])
             await eval(f"lesson_{current_lesson}.start_lesson({tg_user.id})")
         except Exception as e:
             logger.exception(e)
