@@ -31,16 +31,22 @@ class TgBot:
         self.rest = RestApi(rest_api_url, rest_api_key)
         self.exceptions = [HTTPError, ConnectionError, Timeout, RequestException, JSONDecodeError, ReadTimeout]
         self.setup_handlers()
-        asyncio.run(self.start_polling())
+        
+        self.running_users = []
+        asyncio.run(self.start_bot())
         
     def get_start_param(self, text):
         # Extracts the parameter value from the sent /start command.
         return text.split()[1] if len(text.split()) > 1 else None
 
-    async def start_lessons(self, tg_user: types.User, lk_url: str):
+    async def start_lessons(self, user_id, first_name, lk_url: str):
+        # Don't start for already running users
+        if str(user_id) in self.running_users:
+            return
+        
         lesson_timings = [
-            # [0.1,2,58,60,60,60, 60,60,240,120,480,240,1440],
-            [0.05,0.02,0.02,0.02,0.02,         0.02,0.02,0.02,0.02,0.02,0.05],
+            [0.1,2,58,60,60,60, 60,60,240,120,480,240,1440],
+            # [0.05,0.02,0.02,0.02,0.02,         0.02,0.02,0.02,0.02,0.02,0.05],
             [0.05,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.05],
             [0.05,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05],
             [0.05,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05]
@@ -49,7 +55,10 @@ class TgBot:
         try:
             ## Find last completed lesson
             current_lesson = 0
-            lessons: list = self.rest.get_user_lessons(tg_user.id)
+            lessons: list = self.rest.get_user_lessons(user_id)
+            if len(lessons) == 0:
+                return
+            
             for lesson in lessons:
                 if (lesson['completed'] and current_lesson + 1 < len(lessons)):
                     current_lesson += 1
@@ -75,17 +84,22 @@ class TgBot:
             mins_elspsed = mins_sum - mins_left
             mins_delay = lesson_timings[current_lesson][current_step] - mins_elspsed
 
-            lesson_4 = Lesson(self, tg_user, lk_url, lesson_timings[3], [], 4)
-            lesson_3 = Lesson(self, tg_user, lk_url, lesson_timings[2], [], 3, lesson_4)
-            lesson_2 = Lesson(self, tg_user, lk_url, lesson_timings[1], [], 2, lesson_3)
-            lesson_1 = Lesson(self, tg_user, lk_url, lesson_timings[0], [], 1, lesson_2)
-            # lesson_1 = Lesson(self, tg_user, lk_url, lesson_timings[0], [], 1)
+            lesson_4 = Lesson(self, user_id, first_name, lk_url, lesson_timings[3], 4)
+            lesson_3 = Lesson(self, user_id, first_name, lk_url, lesson_timings[2], 3, lesson_4)
+            lesson_2 = Lesson(self, user_id, first_name, lk_url, lesson_timings[1], 2, lesson_3)
+            lesson_1 = Lesson(self, user_id, first_name, lk_url, lesson_timings[0], 1, lesson_2)
+            # lesson_1 = Lesson(self, user_id, first_name, lk_url, lesson_timings[0], 1)
+            print('[USER]: ' + str(user_id))
             print('Current step: ' + str(current_step))
             print('Mins left: ' + str(mins_left))
             print('Mins sum: ' + str(mins_sum))
             print('Mins delay: ' + str(mins_delay))
             print('\n')
-            await eval(f"lesson_{current_lesson + 1}.start_lesson({tg_user.id}, {current_step}, {mins_delay})")
+            # If mins_left is negative, bot will send the last notification every time
+            # so we prevent sending that if more than 5 mins past its deadline
+            if (mins_left > -5):
+                self.running_users.append(str(user_id))
+                await eval(f"lesson_{current_lesson + 1}.start_lesson('{user_id}', {current_step}, {mins_delay})")
         except Exception as e:
             logger.exception(e)
 
@@ -111,7 +125,7 @@ class TgBot:
 
                     # msg = f"Привет, {tg_user.first_name}! Твой личный кабинет: \n{self.site_url}{user['link']}"
                     # await self.bot.send_message(message.chat.id, msg)
-                    await self.start_lessons(tg_user, self.site_url + user['link'])
+                    await self.start_lessons(tg_user.id, tg_user.first_name, self.site_url + user['link'])
 
                     # await self.video_message(tg_user.id, 'assets/videos/tgvideo')
                     # await self.push_1(tg_user.id)
@@ -164,7 +178,7 @@ class TgBot:
                             # User registered successfully
 
                             # Start 1st lesson
-                            await self.start_lessons(tg_user, self.site_url + res['link'])
+                            await self.start_lessons(tg_user.id, tg_user.first_name, self.site_url + res['link'])
                             # pass
 
                             # msg = self.notifications.lesson_1_0(tg_user.first_name, res['link'])
@@ -280,5 +294,24 @@ class TgBot:
             except Exception as e:
                 logger.exception(e)
 
-    async def start_polling(self):
-        await self.dp.start_polling(self.bot)
+    async def start_bot(self):
+        users_list = self.rest.get_users_list()
+        if (users_list):
+            users_list = list(map(lambda usr: {
+                'uid': usr['tg_uid'],
+                'first_name': usr['first_name'],
+                'lk_url': usr['link']
+            }, users_list))
+        else:
+            users_list = []
+
+        tasks = []
+        try:
+            tasks.append(self.dp.start_polling(self.bot))
+            for user in users_list:
+                tasks.append(self.start_lessons(user['uid'], user['first_name'], self.site_url + user['lk_url']))
+
+            await asyncio.gather(*tasks)
+
+        except Exception as e:
+            logger.exception(e)

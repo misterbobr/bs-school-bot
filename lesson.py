@@ -4,22 +4,22 @@ from notifications import Notifications
 from logger import logger
 
 class Lesson:
-    def __init__(self, bot, tg_user, lk_url: str, step_delays: list[int], step_lives: list[int], current_lesson: int, next_lesson=None):
+    def __init__(self, bot, user_id, first_name, lk_url: str, step_delays: list[int], current_lesson: int, next_lesson=None):
         # step delays contains the time in mins between each step
         # step lives contains numbers of steps where lives are lost
         self.step_delays = step_delays
-        self.step_lives = step_lives
         self.current_lesson = current_lesson
         # from 0 to step_delays length
         self.current_step = 0
         self.next_lesson = next_lesson
         self.bot = bot
-        self.notifications = Notifications(bot, tg_user, lk_url)
+        self.notifications = Notifications(bot, user_id, first_name, lk_url)
 
     async def next_step(self):
         await self.send_notification()
         self.current_step += 1
-        self.delay = self.step_delays[self.current_step]
+        if self.current_step < len(self.step_delays):
+            self.delay = self.step_delays[self.current_step]
 
     async def check_homework(self, uid, delay):
         # Check every %interval% seconds
@@ -105,7 +105,7 @@ class Lesson:
                     
                     else:
                         # print('HW UNKNOWN STATUS')
-                        await asyncio.sleep(0.5 * 60)
+                        await self.next_step()
 
         except Exception as e:
             logger.exception(e)
