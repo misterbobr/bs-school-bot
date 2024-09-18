@@ -12,7 +12,6 @@ class Notifications:
         self.bot = bot
         self.user_id = user_id
         self.first_name = first_name
-        ## TODO: URLS
         self.urls = {
             'lk': lk_url,
             'renat': 'https://t.me/renatshagabutdinov',
@@ -127,7 +126,7 @@ class Notifications:
             url=self.urls['lk'])
         )
         
-        await self.video_message(self.user_id, 'assets/videos/circles/1.mov')
+        await self.video_message(self.user_id, 'assets/videos/circles/1.mp4')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
         # return {
@@ -220,7 +219,7 @@ class Notifications:
             url=self.urls['lk'])
         )
         
-        await self.video_message(self.user_id, 'assets/videos/circles/2.mov')
+        await self.video_message(self.user_id, 'assets/videos/circles/2.mp4')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
 
@@ -245,7 +244,7 @@ class Notifications:
             url=self.urls['renat'])
         )
         
-        await self.video_message(self.user_id, 'assets/videos/circles/3.mov')
+        await self.video_message(self.user_id, 'assets/videos/circles/3.mp4')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
 
@@ -498,7 +497,7 @@ class Notifications:
             url=self.urls['lk'])
         )
         
-        await self.video_message(self.user_id, 'assets/videos/circles/4.mov')
+        await self.video_message(self.user_id, 'assets/videos/circles/4.mp4')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
 
@@ -518,7 +517,7 @@ class Notifications:
             url=self.urls['lk'])
         )
         
-        await self.video_message(self.user_id, 'assets/videos/circles/5.mov')
+        await self.video_message(self.user_id, 'assets/videos/circles/5.mp4')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
 
@@ -630,7 +629,7 @@ class Notifications:
             url=self.urls['lk'])
         )
         
-        await self.video_message(self.user_id, 'assets/videos/circles/6.mov')
+        await self.video_message(self.user_id, 'assets/videos/circles/6.mp4')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
 
@@ -780,7 +779,7 @@ class Notifications:
             url=self.urls['renat'])
         )
         
-        await self.video_message(self.user_id, 'assets/videos/circles/7.mov')
+        await self.video_message(self.user_id, 'assets/videos/circles/7.mp4')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
 
@@ -998,7 +997,7 @@ class Notifications:
             url=self.urls['renat'])
         )
         
-        await self.video_message(self.user_id, 'assets/videos/circles/8.mov')
+        await self.video_message(self.user_id, 'assets/videos/circles/8.mp4')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
         self.bot.rest.send_mail(self.user_id, 12)

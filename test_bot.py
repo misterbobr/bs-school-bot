@@ -45,11 +45,14 @@ class TgBot:
             return
         
         lesson_timings = [
-            # [0.1,2,58,60,60,60, 60,60,240,120,480,240,1440],
-            [0.05,0.05,0.05,0.05,0.05,0.05,     0.05,0.05,0.05,0.05,0.05,0.05,0.05],
-            [0.05,0.05,0.05,0.05,0.05,0.05,     0.05,0.05,0.05,0.05,0.05,0.05,0.05],
-            [0.05,0.05,0.05,0.05,0.05,0.05,     0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05],
-            [0.05,0.05,0.05,0.05,0.05,          0.05,0.05,0.05,0.05,0.05,0.05,]
+            # [0.05,0.05,0.05,0.05,0.05,0.05,     0.05,0.05,0.05,0.05,0.05,0.05,0.05],
+            # [1,0.05,0.05,0.05,0.05,0.05,     0.05,0.05,0.05,0.05,0.05,0.05,0.05],
+            # [0.05,0.05,0.05,0.05,0.05,0.05,     0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05],
+            # [0.05,0.05,0.05,0.05,0.05,          0.05,0.05,0.05,0.05,0.05,0.05,]
+            [0.1,2,58,60,60,60,     60,60,240,120,480,240,1440],
+            [30,60,60,60,60,60,     30,180,180,360,180,180,1440],
+            [1,59,60,60,60,60,     60,180,180,360,360,1440],
+            [1,179,60,60,180,     240,240,240,120,60,60],
         ]
 
         try:
@@ -64,7 +67,7 @@ class TgBot:
                     current_lesson += 1
                 else:
                     break
-            print('Current lesson: ' + str(current_lesson + 1))
+            # print('Current lesson: ' + str(current_lesson + 1))
                 
             ## Define next message based on deadline time
             current_step = len(lesson_timings[current_lesson]) - 1
@@ -72,7 +75,8 @@ class TgBot:
             # mins till deadline
             mins_left = (time.mktime(time_dl) - time.time()) / 60
             # add last step delay because it's after deadline
-            mins_left += lesson_timings[current_lesson][-1]
+            if (current_lesson < 3):
+                mins_left += lesson_timings[current_lesson][-1]
             mins_sum = 0
             while True:
                 mins_sum += lesson_timings[current_lesson][current_step]
@@ -89,12 +93,12 @@ class TgBot:
             lesson_2 = Lesson(self, user_id, first_name, lk_url, lesson_timings[1], 2, lesson_3)
             lesson_1 = Lesson(self, user_id, first_name, lk_url, lesson_timings[0], 1, lesson_2)
             # lesson_1 = Lesson(self, user_id, first_name, lk_url, lesson_timings[0], 1)
-            print('[USER]: ' + str(user_id))
-            print('Current step: ' + str(current_step))
-            print('Mins left: ' + str(mins_left))
-            print('Mins sum: ' + str(mins_sum))
-            print('Mins delay: ' + str(mins_delay))
-            print('\n')
+            # print('[USER]: ' + str(user_id))
+            # print('Current step: ' + str(current_step))
+            # print('Mins left: ' + str(mins_left))
+            # print('Mins sum: ' + str(mins_sum))
+            # print('Mins delay: ' + str(mins_delay))
+            # print('\n')
             # If mins_left is negative, bot will send the last notification every time
             # so we prevent sending that if more than 5 mins past its deadline
             if (mins_left > -5):
@@ -309,10 +313,9 @@ class TgBot:
 
             tasks = []
             tasks.append(self.dp.start_polling(self.bot))
-            ## TODO: Remove uid check
             for user in users_list:
-                if (str(user['uid']) == '806075497'):
-                    tasks.append(self.start_lessons(user['uid'], user['first_name'], self.site_url + user['lk_url']))
+                # if (str(user['uid']) == '806075497'):
+                tasks.append(self.start_lessons(user['uid'], user['first_name'], self.site_url + user['lk_url']))
 
             await asyncio.gather(*tasks)
 

@@ -28,7 +28,7 @@ class Lesson:
         while elapsed < delay or elapsed == 0:
             await asyncio.sleep(interval)
             elapsed += interval
-            print('Time left: ' + str(delay - elapsed) + ' sec')
+            # print('Time left: ' + str(delay - elapsed) + ' sec')
 
             lessons: list = self.bot.rest.get_user_lessons(uid)
             try:
