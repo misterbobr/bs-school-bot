@@ -45,11 +45,11 @@ class TgBot:
             return
         
         lesson_timings = [
-            [0.1,2,58,60,60,60, 60,60,240,120,480,240,1440],
-            # [0.05,0.02,0.02,0.02,0.02,         0.02,0.02,0.02,0.02,0.02,0.05],
-            [0.05,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.05],
-            [0.05,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05],
-            [0.05,0.02,0.02,0.02,0.02,0.02,    0.02,0.02,0.02,0.02,0.02,0.02,0.05]
+            # [0.1,2,58,60,60,60, 60,60,240,120,480,240,1440],
+            [0.05,0.05,0.05,0.05,0.05,0.05,     0.05,0.05,0.05,0.05,0.05,0.05,0.05],
+            [0.05,0.05,0.05,0.05,0.05,0.05,     0.05,0.05,0.05,0.05,0.05,0.05,0.05],
+            [0.05,0.05,0.05,0.05,0.05,0.05,     0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05],
+            [0.05,0.05,0.05,0.05,0.05,          0.05,0.05,0.05,0.05,0.05,0.05,]
         ]
 
         try:
@@ -261,7 +261,7 @@ class TgBot:
                 ## User left
                 elif (update.new_chat_member.status == 'left'):
                     if (str(update.chat.id) == self.channel_id):
-                        res = self.rest.user_ubsubscribed(update.new_chat_member.user.id)
+                        res = self.rest.user_unsubscribed(update.new_chat_member.user.id)
                     ## We don't check users leaving chat
                     # elif (str(update.chat.id) == self.course_chat_id):
                     #     res = self.rest.user_left_chat(update.new_chat_member.user.id)

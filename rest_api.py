@@ -230,7 +230,7 @@ class RestApi:
         except requests.exceptions.RequestException as err:
             logger.exception(err)
             return err
-    def user_ubsubscribed(self, uid):
+    def user_unsubscribed(self, uid):
         url = self.api_url + f"/users/{uid}/unsubscribe"
         headers = {
             "Authorization": f"{self.api_key}"
@@ -255,7 +255,7 @@ class RestApi:
             return err
         
     def set_user_lives(self, uid, lives):
-        url = self.api_url + f"/users/{uid}"
+        url = self.api_url + f"/course/excel/users/{uid}"
         headers = {
             "Authorization": f"{self.api_key}"
         }

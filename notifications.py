@@ -12,11 +12,12 @@ class Notifications:
         self.bot = bot
         self.user_id = user_id
         self.first_name = first_name
+        ## TODO: URLS
         self.urls = {
             'lk': lk_url,
             'renat': 'https://t.me/renatshagabutdinov',
             'chat': 'https://t.me/pivottables_bs',
-            'yandex': ''
+            'yandex': lk_url
         }
     #     self.session = requests.Session()
 
