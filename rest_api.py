@@ -253,3 +253,30 @@ class RestApi:
         except requests.exceptions.RequestException as err:
             logger.exception(err)
             return err
+        
+    def set_user_lives(self, uid, lives):
+        url = self.api_url + f"/users/{uid}"
+        headers = {
+            "Authorization": f"{self.api_key}"
+        }
+        payload = {
+            "lives": lives
+        }
+        try:
+            response = self.session.patch(url, headers=headers, data=payload, timeout=20)
+            response.raise_for_status()
+            # print(response.text)
+            response = response.json()
+            return response
+        except requests.exceptions.HTTPError as errh:
+            logger.exception(errh)
+            return errh
+        except requests.exceptions.ConnectionError as errc:
+            logger.exception(errc)
+            return errc
+        except requests.exceptions.Timeout as errt:
+            logger.exception(errt)
+            return errt
+        except requests.exceptions.RequestException as err:
+            logger.exception(err)
+            return err

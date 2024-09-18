@@ -308,8 +308,10 @@ class TgBot:
         tasks = []
         try:
             tasks.append(self.dp.start_polling(self.bot))
+            ## TODO: Remove uid check
             for user in users_list:
-                tasks.append(self.start_lessons(user['uid'], user['first_name'], self.site_url + user['lk_url']))
+                if (str(user['uid']) == '806075497'):
+                    tasks.append(self.start_lessons(user['uid'], user['first_name'], self.site_url + user['lk_url']))
 
             await asyncio.gather(*tasks)
 

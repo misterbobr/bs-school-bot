@@ -296,6 +296,7 @@ class Notifications:
         
         await self.photo_message(self.user_id, 'assets/images/lives-1.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
+        self.bot.rest.set_user_lives(self.user_id, 2)
     
     async def lesson_1_8(self):
         builder = InlineKeyboardBuilder()
@@ -341,6 +342,7 @@ class Notifications:
         
         await self.photo_message(self.user_id, 'assets/images/lives-2.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
+        self.bot.rest.set_user_lives(self.user_id, 1)
 
     async def lesson_1_10(self):
         builder = InlineKeyboardBuilder()
@@ -388,6 +390,7 @@ class Notifications:
         
         await self.photo_message(self.user_id, 'assets/images/lives-3.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
+        self.bot.rest.set_user_lives(self.user_id, 0)
 
     async def lesson_1_after_done(self):
         builder = InlineKeyboardBuilder()
@@ -558,6 +561,7 @@ class Notifications:
         
         await self.photo_message(self.user_id, 'assets/images/lives-1.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
+        self.bot.rest.set_user_lives(self.user_id, 2)
 
     async def lesson_2_7(self):
         builder = InlineKeyboardBuilder()
@@ -601,6 +605,7 @@ class Notifications:
         
         await self.photo_message(self.user_id, 'assets/images/lives-2.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
+        self.bot.rest.set_user_lives(self.user_id, 1)
 
     async def lesson_2_9(self):
         builder = InlineKeyboardBuilder()
@@ -665,6 +670,7 @@ class Notifications:
         
         await self.photo_message(self.user_id, 'assets/images/lives-3.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
+        self.bot.rest.set_user_lives(self.user_id, 0)
 
     
     ## LESSON 3 ##
@@ -844,6 +850,7 @@ class Notifications:
         
         await self.photo_message(self.user_id, 'assets/images/lives-1.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
+        self.bot.rest.set_user_lives(self.user_id, 2)
 
     async def lesson_3_7(self):
         builder = InlineKeyboardBuilder()
@@ -887,6 +894,7 @@ class Notifications:
         
         await self.photo_message(self.user_id, 'assets/images/lives-2.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
+        self.bot.rest.set_user_lives(self.user_id, 1)
 
     async def lesson_3_9(self):
         builder = InlineKeyboardBuilder()
@@ -931,6 +939,7 @@ class Notifications:
         
         await self.photo_message(self.user_id, 'assets/images/lives-3.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
+        self.bot.rest.set_user_lives(self.user_id, 0)
 
     
     ## LESSON 4 ##
@@ -1237,4 +1246,5 @@ class Notifications:
         
         await self.photo_message(self.user_id, 'assets/images/done.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
+        self.bot.rest.set_user_lives(self.user_id, 3)
     
