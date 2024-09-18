@@ -17,7 +17,7 @@ class Notifications:
             'lk': lk_url,
             'renat': 'https://t.me/renatshagabutdinov',
             'chat': 'https://t.me/pivottables_bs',
-            'yandex': lk_url
+            'yandex': 'https://yandex.ru/maps/org/bonnie_slide/97128190728/?ll=37.672366%2C55.775950&z=14'
         }
     #     self.session = requests.Session()
 
