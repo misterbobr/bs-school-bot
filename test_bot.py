@@ -207,20 +207,18 @@ class TgBot:
                 logger.exception(e)
                 
 
-        # @self.dp.message(F.text)
-        # async def text_message(message: types.Message):
-        #     print(message.chat.id)
-
         # Handle user messages in course chat
-        @self.dp.channel_post()
-        async def chat_message(channel_post: types.Message):
+        # @self.dp.channel_post()
+        @self.dp.message()
+        async def chat_message(message: types.Message):
+            # print(message)
             try:
-                if (str(channel_post.chat.id) == self.course_chat_id):
-                    if (channel_post.from_user):
-                        # print('From: ' + str(channel_post.from_user.id))
-                        res = self.rest.user_joined_chat(channel_post.from_user.id)
-                        # print('RESPONSE:')
-                        # print(res)
+                if (str(message.chat.id) == self.course_chat_id):
+                    if (message.from_user):
+                        print('From: ' + str(message.from_user.id))
+                        res = self.rest.user_joined_chat(message.from_user.id)
+                        print('RESPONSE:')
+                        print(res)
 
             except Exception as e:
                 logger.exception(e)
@@ -228,7 +226,7 @@ class TgBot:
         @self.dp.chat_member()
         async def new_chat_member(update: types.ChatMemberUpdated):
             # print('\n')
-            # print(update.chat)
+            print(update.chat)
             # print(update.new_chat_member.status)
             # print(update.new_chat_member.user)
 
@@ -237,11 +235,10 @@ class TgBot:
                 if (update.new_chat_member.status in ['member', 'administrator', 'creator']): # need just 'member', the others are for test
                     if (str(update.chat.id) == self.channel_id):
                         res = self.rest.user_subscribed(update.new_chat_member.user.id)
-                    else:
-                        return
-                    
-                    print('RESPONSE:')
-                    print(res)
+                        print('RESPONSE:')
+                        print(res)
+
+                    return
 
                     if ('result' not in res):
                         # REST request error
@@ -269,11 +266,11 @@ class TgBot:
                     ## We don't check users leaving chat
                     # elif (str(update.chat.id) == self.course_chat_id):
                     #     res = self.rest.user_left_chat(update.new_chat_member.user.id)
-                    else:
-                        return
                     
-                    print('RESPONSE:\n')
-                    print(res)
+                    # print('RESPONSE:\n')
+                    # print(res)
+
+                    return
 
                     if ('result' not in res):
                         # REST request error
@@ -299,18 +296,18 @@ class TgBot:
                 logger.exception(e)
 
     async def start_bot(self):
-        users_list = self.rest.get_users_list()
-        if (users_list):
-            users_list = list(map(lambda usr: {
-                'uid': usr['tg_uid'],
-                'first_name': usr['first_name'],
-                'lk_url': usr['link']
-            }, users_list))
-        else:
-            users_list = []
-
-        tasks = []
         try:
+            users_list = self.rest.get_users_list()
+            if (users_list):
+                users_list = list(map(lambda usr: {
+                    'uid': usr['tg_uid'],
+                    'first_name': usr['first_name'],
+                    'lk_url': usr['link']
+                }, users_list))
+            else:
+                users_list = []
+
+            tasks = []
             tasks.append(self.dp.start_polling(self.bot))
             ## TODO: Remove uid check
             for user in users_list:
