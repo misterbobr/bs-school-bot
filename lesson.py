@@ -83,11 +83,24 @@ class Lesson:
                         # print('HW COMPLETED')
                         fun = "self.notifications.lesson_done()"
                         await eval(fun)
+
+                        # Send lesson done mail
+                        mail_id = False
                         if (self.current_lesson == 1):
-                            await asyncio.sleep(0.05 * 60)
+                            mail_id = 3
+                        elif (self.current_lesson == 2):
+                            mail_id = 6
+                        elif (self.current_lesson == 3):
+                            mail_id = 9
+
+                        if (mail_id):
+                            self.bot.rest.send_mail(uid, mail_id)
+                            
+                        # Additional notification after 1st lesson
+                        if (self.current_lesson == 1):
                             fun = "self.notifications.lesson_1_after_done()"
                             await eval(fun)
-
+                        
                         if (self.next_lesson):
                             await self.next_lesson.start_lesson(uid)
                         break

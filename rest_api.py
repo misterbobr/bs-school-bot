@@ -280,3 +280,27 @@ class RestApi:
         except requests.exceptions.RequestException as err:
             logger.exception(err)
             return err
+        
+    def send_mail(self, uid, mail_id):
+        url = self.api_url + f"/course/excel/mail/{mail_id}/send/{uid}"
+        headers = {
+            "Authorization": f"{self.api_key}"
+        }
+        try:
+            response = self.session.get(url, headers=headers, timeout=20)
+            response.raise_for_status()
+            # print(response.text)
+            response = response.json()
+            return response
+        except requests.exceptions.HTTPError as errh:
+            logger.exception(errh)
+            return errh
+        except requests.exceptions.ConnectionError as errc:
+            logger.exception(errc)
+            return errc
+        except requests.exceptions.Timeout as errt:
+            logger.exception(errt)
+            return errt
+        except requests.exceptions.RequestException as err:
+            logger.exception(err)
+            return err
