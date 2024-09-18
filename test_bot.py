@@ -165,12 +165,14 @@ class TgBot:
 
                         if (type(res) in self.exceptions):
                             msg = f"Произошла ошибка при попытке отправить запрос"
-                            print(res.response.text)
+                            # print(res.response.text)
+                            logger.error(res.response.text)
                             await self.bot.send_message(message.chat.id, msg)
                             return
                         elif ('result' not in res):
                             msg = f"Произошла ошибка при попытке отправить запрос"
-                            print('[ERROR]: ' + res)
+                            # print('[ERROR]: ' + res)
+                            logger.error(str(res))
                             await self.bot.send_message(message.chat.id, msg)
                             return
                         
@@ -187,11 +189,13 @@ class TgBot:
                             # await self.push_1(tg_user.id)
                         elif (res['result'] == 'failed' and 'error' in res):
                             msg = f"Произошла ошибка при регистрации"
-                            print('[ERROR]: ' + res['error'])
+                            # print('[ERROR]: ' + res['error'])
+                            logger.error(res['error'])
                             await self.bot.send_message(message.chat.id, msg)
                         else:
                             msg = f"Произошла неизвестная ошибка при регистрации"
-                            print('[ERROR]: ' + res)
+                            # print('[ERROR]: ' + res)
+                            logger.error(str(res))
                             await self.bot.send_message(message.chat.id, msg)
                             
                     else:

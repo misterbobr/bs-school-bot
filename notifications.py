@@ -1227,7 +1227,7 @@ class Notifications:
         
         builder.row(types.InlineKeyboardButton(
             text='Оставить обратную связь и забрать подарок',
-            url=self.urls['lk'])
+            url=self.urls['renat'])
         )
         
         await self.photo_message(self.user_id, 'assets/images/inactive.png')
