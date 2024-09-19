@@ -23,7 +23,7 @@ class Lesson:
 
     async def check_homework(self, uid, delay):
         # Check every %interval% seconds
-        interval = 5
+        interval = 60
         elapsed = 0
         while elapsed < delay or elapsed == 0:
             await asyncio.sleep(interval)
@@ -108,12 +108,12 @@ class Lesson:
                     # if hw received, check its status every 5 min
                     elif status == 'received':
                         # print('HW RECEIVED')
-                        await asyncio.sleep(0.3 * 60)
+                        await asyncio.sleep(60)
 
                     # if hw overdue, stop
                     elif status == 'overdue':
                         # print('HW OVERDUE')
-                        await asyncio.sleep(0.3 * 60)
+                        await asyncio.sleep(60)
                         return
                     
                     else:
