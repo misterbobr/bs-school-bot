@@ -138,7 +138,7 @@ class TgBot:
                     start = self.get_start_param(message.text)
                     if (start):
                         # Has start param
-                        msg = f"Добро пожаловать, {tg_user.first_name}! Сейчас мы зарегистрируем тебя и пришлём ссылку на вашу личную страницу"
+                        msg = f"Добро пожаловать, {tg_user.first_name}! Сейчас мы зарегистрируем тебя и пришлём ссылку на личную страницу"
                         # await self.bot.send_message(message.chat.id, msg)
 
                         # Get user profile photo
@@ -207,6 +207,31 @@ class TgBot:
                         msg = f"Пожалуйста, пройдите регистрацию на странице ..."
                         # await self.bot.send_message(message.chat.id, msg)
         
+            except Exception as e:
+                logger.exception(e)
+
+        ### restart command - remove user from running list and start lessons again
+        @self.dp.message(Command("restart"))
+        async def start_message(message: types.Message):
+            tg_user = message.from_user
+            user = self.rest.get_user_link(tg_user.id)
+
+            try:
+                if (type(user) in self.exceptions):
+                    msg = f"Произошла ошибка при попытке отправить запрос"
+                    print(user)
+                    await self.bot.send_message(message.chat.id, msg)
+                    return
+                elif ('result' not in user):
+                    return
+                
+                if (user['result'] == 'true' and 'link' in user):
+                    # User found in database
+                    # Remove user from running list
+                    self.running_users.remove(str(tg_user.id))
+                    # Restart lessons
+                    await self.start_lessons(tg_user.id, tg_user.first_name, self.site_url + user['link'])
+
             except Exception as e:
                 logger.exception(e)
                 
