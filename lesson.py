@@ -26,6 +26,10 @@ class Lesson:
         interval = 60
         elapsed = 0
         while elapsed < delay or elapsed == 0:
+            # Check if user still in list
+            if str(uid) not in self.bot.running_users:
+                return False
+            
             await asyncio.sleep(interval)
             elapsed += interval
             # print('Time left: ' + str(delay - elapsed) + ' sec')
@@ -74,6 +78,11 @@ class Lesson:
             # Checking homework status until final step is reached
             while self.current_step < len(self.step_delays):
                 status = await self.check_homework(uid, self.delay * 60)
+
+                # Check if user still in list
+                if str(uid) not in self.bot.running_users:
+                    return
+                
                 # Next step if hw not received/completed
                 if not status:
                     await self.next_step()

@@ -228,7 +228,8 @@ class TgBot:
                 if (user['result'] == 'true' and 'link' in user):
                     # User found in database
                     # Remove user from running list
-                    self.running_users.remove(str(tg_user.id))
+                    if (str(tg_user.id) in self.running_users):
+                        self.running_users.remove(str(tg_user.id))
                     # Restart lessons
                     await self.start_lessons(tg_user.id, tg_user.first_name, self.site_url + user['link'])
 
