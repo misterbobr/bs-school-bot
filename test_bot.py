@@ -150,14 +150,14 @@ class TgBot:
 
                             # Upload user avatar and send its relative path
                             tg_photo_file = await self.bot.get_file(tg_photo[0].file_id)
-                            print('TG PHOTO FILE: ' + str(tg_photo_file))
+                            # print('TG PHOTO FILE: ' + str(tg_photo_file))
                             # File path usually looks like 'photos/%filename%', we take only %filename%
                             tg_photo_file_name = tg_photo_file.file_path.split('/')[-1]
-                            print('TG PHOTO NAME: ' + str(tg_photo_file_name))
+                            # print('TG PHOTO NAME: ' + str(tg_photo_file_name))
                             tg_photo_url = str(tg_user.id) + '/' + tg_photo_file_name
-                            print('TG PHOTO URL: ' + str(tg_photo_url))
+                            # print('TG PHOTO URL: ' + str(tg_photo_url))
                             tg_photo_path = path.abspath(self.uploads_path + tg_photo_url)
-                            print('TG PHOTO LOCATION: ' + str(tg_photo_path))
+                            # print('TG PHOTO LOCATION: ' + str(tg_photo_path))
 
                             makedirs(self.uploads_path + str(tg_user.id), exist_ok=True)
                             await self.bot.download_file(tg_photo_file.file_path, tg_photo_path)
@@ -212,7 +212,7 @@ class TgBot:
 
         ### restart command - remove user from running list and start lessons again
         @self.dp.message(Command("restart"))
-        async def start_message(message: types.Message):
+        async def restart_message(message: types.Message):
             tg_user = message.from_user
             user = self.rest.get_user_link(tg_user.id)
 

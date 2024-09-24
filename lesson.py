@@ -25,7 +25,7 @@ class Lesson:
         # Check every %interval% seconds
         interval = 60
         elapsed = 0
-        while elapsed < delay or elapsed == 0:
+        while elapsed < delay or (elapsed == 0 and delay > 0):
             # Check if user still in list
             if str(uid) not in self.bot.running_users:
                 return False
@@ -73,7 +73,11 @@ class Lesson:
     
     async def start_lesson(self, uid, current_step=0, delay=0):
         self.current_step = current_step
-        self.delay = delay
+        # 0 delay for first message
+        if (self.current_lesson == 1 and current_step == 0):
+            self.delay = 0
+        else:
+            self.delay = delay
         try:
             # Checking homework status until final step is reached
             while self.current_step < len(self.step_delays):
