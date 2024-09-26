@@ -121,7 +121,6 @@ class TgBot:
                     await self.bot.send_message(message.chat.id, msg)
                     return
                 elif ('result' not in user):
-                    pass    # TODO process possible errors in request to api
                     logger.error(str(user))
                     return
                 
@@ -220,10 +219,11 @@ class TgBot:
             try:
                 if (type(user) in self.exceptions):
                     msg = f"Произошла ошибка при попытке отправить запрос"
-                    print(user)
+                    logger.error(str(user))
                     await self.bot.send_message(message.chat.id, msg)
                     return
                 elif ('result' not in user):
+                    logger.error(str(user))
                     return
                 
                 if (user['result'] == 'true' and 'link' in user):
