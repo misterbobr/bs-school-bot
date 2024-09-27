@@ -232,7 +232,7 @@ class TgBot:
                     if (str(tg_user.id) in self.running_users):
                         self.running_users.remove(str(tg_user.id))
                     # Restart lessons
-                    msg = f"Получена команда на перезапуск. Это может занять некоторое время.\nПосле перезапуска бот постарается начать с места, на котором остановился <i>(до следующих сообщений может пройти несколько часов)<i>"
+                    msg = f"Получена команда на перезапуск. Это может занять некоторое время.\nПосле перезапуска бот постарается начать с места, на котором остановился <i>(до следующих сообщений может пройти несколько часов)</i>"
                     await self.bot.send_message(message.chat.id, msg)
                     await asyncio.sleep(80)
                     await self.start_lessons(tg_user.id, tg_user.first_name, self.site_url + user['link'])
