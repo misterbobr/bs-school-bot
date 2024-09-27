@@ -129,6 +129,8 @@ class TgBot:
 
                     # msg = f"Привет, {tg_user.first_name}! Твой личный кабинет: \n{self.site_url}{user['link']}"
                     # await self.bot.send_message(message.chat.id, msg)
+                    msg = f"Бот запущен"
+                    await self.bot.send_message(message.chat.id, msg)
                     await self.start_lessons(tg_user.id, tg_user.first_name, self.site_url + user['link'])
 
                     # await self.video_message(tg_user.id, 'assets/videos/tgvideo')

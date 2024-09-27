@@ -137,6 +137,7 @@ class Lesson:
             logger.exception(e)
         finally:
             # Remove user from running list after done
-            self.bot.running_users.remove(str(uid))
+            if (str(uid) in self.bot.running_users):
+                self.bot.running_users.remove(str(uid))
     
 # lesson_1 = Lesson([0,1,60,60,60,60, 60,60,240,120,480,240,1440])
