@@ -55,6 +55,29 @@ class RestApi:
             logger.exception(err)
             return err
         
+    def user_check_lead(self, uid):
+        url = self.api_url + f"/course/excel/users/{uid}/lead"
+        headers = {
+            "Authorization": f"{self.api_key}"
+        }
+        try:
+            response = self.session.get(url, params={}, headers=headers, timeout=10)
+            response.raise_for_status()
+            response = response.json()
+            return response
+        except requests.exceptions.HTTPError as errh:
+            logger.exception(errh)
+            return errh
+        except requests.exceptions.ConnectionError as errc:
+            logger.exception(errc)
+            return errc
+        except requests.exceptions.Timeout as errt:
+            logger.exception(errt)
+            return errt
+        except requests.exceptions.RequestException as err:
+            logger.exception(err)
+            return err
+        
     def get_users_list(self):
         url = self.api_url + f"/course/excel/users"
         headers = {
