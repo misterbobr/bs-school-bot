@@ -23,7 +23,7 @@ class Lesson:
 
     async def check_homework(self, uid, delay):
         # Check every %interval% seconds
-        interval = 60
+        interval = 120
         elapsed = 0
         while elapsed < delay or (elapsed == 0 and delay > 0):
             # Check if user still in list
@@ -90,48 +90,48 @@ class Lesson:
                 # Next step if hw not received/completed
                 if not status:
                     await self.next_step()
-                else:
-                    # if hw completed, go to next lesson
-                    if status == 'completed':
-                        # print('HW COMPLETED')
-                        fun = "self.notifications.lesson_done()"
-                        await eval(fun)
+                # if hw completed, go to next lesson
+                elif status == 'completed':
+                    # print('HW COMPLETED')
+                    fun = "self.notifications.lesson_done()"
+                    await eval(fun)
 
-                        # Send lesson done mail
-                        mail_id = False
-                        if (self.current_lesson == 1):
-                            mail_id = 3
-                        elif (self.current_lesson == 2):
-                            mail_id = 6
-                        elif (self.current_lesson == 3):
-                            mail_id = 9
+                    # Send lesson done mail
+                    mail_id = False
+                    if (self.current_lesson == 1):
+                        mail_id = 3
+                    elif (self.current_lesson == 2):
+                        mail_id = 6
+                    elif (self.current_lesson == 3):
+                        mail_id = 9
 
-                        if (mail_id):
-                            self.bot.rest.send_mail(uid, mail_id)
-                            
-                        # Additional notification after 1st lesson
-                        if (self.current_lesson == 1):
-                            fun = "self.notifications.lesson_1_after_done()"
-                            await eval(fun)
+                    if (mail_id):
+                        self.bot.rest.send_mail(uid, mail_id)
                         
-                        if (self.next_lesson):
-                            await self.next_lesson.start_lesson(uid)
-                        break
-
-                    # if hw received, check its status every 5 min
-                    elif status == 'received':
-                        # print('HW RECEIVED')
-                        await asyncio.sleep(60)
-
-                    # if hw overdue, stop
-                    elif status == 'overdue':
-                        # print('HW OVERDUE')
-                        await asyncio.sleep(60)
-                        return
+                    # Additional notification after 1st lesson
+                    if (self.current_lesson == 1):
+                        fun = "self.notifications.lesson_1_after_done()"
+                        await eval(fun)
                     
-                    else:
-                        # print('HW UNKNOWN STATUS')
-                        await self.next_step()
+                    if (self.next_lesson):
+                        await self.next_lesson.start_lesson(uid)
+                    break
+
+                # if hw received, check its status every 5 min
+                elif status == 'received':
+                    # print('HW RECEIVED')
+                    await asyncio.sleep(120)
+
+                # if hw overdue, stop
+                elif status == 'overdue':
+                    # print('HW OVERDUE')
+                    if (str(uid) in self.bot.running_users):
+                        self.bot.running_users.remove(str(uid))
+                    return
+                
+                else:
+                    # print('HW UNKNOWN STATUS')
+                    await self.next_step()
 
         except Exception as e:
             logger.exception(e)

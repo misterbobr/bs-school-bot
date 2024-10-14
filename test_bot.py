@@ -206,8 +206,8 @@ class TgBot:
                             
                     else:
                         # No start param
-                        msg = f"Пожалуйста, пройдите регистрацию на странице ..."
-                        # await self.bot.send_message(message.chat.id, msg)
+                        msg = f"Для регистрации на курсе необходимо перейти по ссылке в электронном письме и нажать кнопку START"
+                        await self.bot.send_message(message.chat.id, msg)
         
             except Exception as e:
                 logger.exception(e)

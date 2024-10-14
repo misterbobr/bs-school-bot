@@ -101,7 +101,8 @@ class Notifications:
 
     async def lesson_1_0(self):
         builder = InlineKeyboardBuilder()
-        msg =   f'Привет, {self.first_name}! Это Ренат Шагабутдинов и академия Bonnie&Slide.'\
+        str1 = f'Привет, {self.first_name}!' if self.first_name else 'Привет!'
+        msg =   f'{str1} Это Ренат Шагабутдинов и академия Bonnie&Slide.'\
                 ' <b>И мы приветствуем тебя на курсе "Сводные таблицы в Excel и Google Таблицах"</b>.'\
                 ' Каждый день мы получаем десятки сообщений с вопросами о том, как создавать отчёты быстро, как создавать'\
                 ' понятные таблицы и что делать с формулами. По этой причине мы и решили запустить этот'\
@@ -180,7 +181,8 @@ class Notifications:
 
     async def lesson_1_3(self):
         builder = InlineKeyboardBuilder()
-        msg =   f'<b>{self.first_name}, Excel и Google Таблицы почти всемогущи ведь они:</b>'\
+        str1 = f'<b>{self.first_name}, Excel и Google Таблицы почти всемогущи ведь они:</b>' if self.first_name else 'Excel и Google Таблицы почти всемогущи ведь они:</b>'
+        msg =   f'{str1}'\
                 ' \n• позволяют быстро суммировать, группировать и анализировать большие объемы данных;'\
                 ' \n• обладают интуитивно понятным интерфейсом, который помогает без глубоких знаний'\
                 ' легко создавать сложные отчеты;'\
@@ -409,7 +411,7 @@ class Notifications:
         )
 
         # Wait 1 min before sending
-        await asyncio.sleep(0.05 * 60)
+        await asyncio.sleep(60)
         await self.video_message(self.user_id, 'assets/videos/screencasts/2.mp4')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
