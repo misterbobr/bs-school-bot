@@ -75,7 +75,18 @@ class TgBot:
             # mins till deadline
             mins_left = (time.mktime(time_dl) - time.time()) / 60
             # add last step delay because it's after deadline
-            if (current_lesson < 3):
+            if (current_lesson + 1 == len(lessons)):
+                # don't start if lead exists
+                try:
+                    lead = self.rest.user_check_lead(user_id)
+                    if ('result' in lead and lead['result'] == 'true'):
+                        return
+                except Exception as e:
+                    logger.exception(e)
+
+                mins_left += sum(lesson_timings[current_lesson][-7:])
+
+            else:
                 mins_left += lesson_timings[current_lesson][-1]
             mins_sum = 0
             while True:

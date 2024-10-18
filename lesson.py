@@ -69,8 +69,7 @@ class Lesson:
             
             await asyncio.sleep(interval)
             elapsed += interval
-            print('Current step: ' + str(self.current_step))
-            print('Time left: ' + str(delay - elapsed) + ' sec')
+            # print('Time left: ' + str(delay - elapsed) + ' sec')
 
             lead = self.bot.rest.user_check_lead(uid)
             try:
