@@ -153,9 +153,9 @@ class Notifications:
             'assets/images/1-1.png',
             'assets/images/1-2.png'
         ]
+        self.bot.rest.send_mail(self.user_id, 2)
         await self.group_message(self.user_id, photos)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.send_mail(self.user_id, 2)
 
     async def lesson_1_2(self):
         builder = InlineKeyboardBuilder()
@@ -298,9 +298,9 @@ class Notifications:
             url=self.urls['lk'])
         )
         
+        self.bot.rest.set_user_lives(self.user_id, 2)
         await self.photo_message(self.user_id, 'assets/images/lives-1.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.set_user_lives(self.user_id, 2)
     
     async def lesson_1_8(self):
         builder = InlineKeyboardBuilder()
@@ -344,9 +344,9 @@ class Notifications:
             url=self.urls['renat'])
         )
         
+        self.bot.rest.set_user_lives(self.user_id, 1)
         await self.photo_message(self.user_id, 'assets/images/lives-2.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.set_user_lives(self.user_id, 1)
 
     async def lesson_1_10(self):
         builder = InlineKeyboardBuilder()
@@ -364,9 +364,9 @@ class Notifications:
             url=self.urls['lk'])
         )
         
+        self.bot.rest.send_mail(self.user_id, 16)
         await self.photo_message(self.user_id, 'assets/images/1-6.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.send_mail(self.user_id, 16)
     
     async def lesson_1_11(self):
         builder = InlineKeyboardBuilder()
@@ -393,10 +393,10 @@ class Notifications:
             url=self.urls['renat'])
         )
         
-        await self.photo_message(self.user_id, 'assets/images/lives-3.png')
-        await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
         self.bot.rest.set_user_lives(self.user_id, 0)
         self.bot.rest.send_mail(self.user_id, 4)
+        await self.photo_message(self.user_id, 'assets/images/lives-3.png')
+        await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
 
     async def lesson_1_after_done(self):
         builder = InlineKeyboardBuilder()
@@ -436,9 +436,9 @@ class Notifications:
             url=self.urls['lk'])
         )
         
+        self.bot.rest.send_mail(self.user_id, 5)
         await self.photo_message(self.user_id, 'assets/images/2-1.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.send_mail(self.user_id, 5)
 
     # async def lesson_2_1(self):
     #     builder = InlineKeyboardBuilder()
@@ -568,9 +568,9 @@ class Notifications:
             url=self.urls['lk'])
         )
         
+        self.bot.rest.set_user_lives(self.user_id, 2)
         await self.photo_message(self.user_id, 'assets/images/lives-1.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.set_user_lives(self.user_id, 2)
 
     async def lesson_2_5(self):
         builder = InlineKeyboardBuilder()
@@ -612,9 +612,9 @@ class Notifications:
             url=self.urls['lk'])
         )
         
+        self.bot.rest.set_user_lives(self.user_id, 1)
         await self.photo_message(self.user_id, 'assets/images/lives-2.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.set_user_lives(self.user_id, 1)
 
     async def lesson_2_7(self):
         builder = InlineKeyboardBuilder()
@@ -651,9 +651,9 @@ class Notifications:
             url=self.urls['lk'])
         )
         
+        self.bot.rest.send_mail(self.user_id, 13)
         await self.photo_message(self.user_id, 'assets/images/2-9.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.send_mail(self.user_id, 13)
 
     async def lesson_2_9(self):
         builder = InlineKeyboardBuilder()
@@ -678,10 +678,10 @@ class Notifications:
             url=self.urls['renat'])
         )
         
-        await self.photo_message(self.user_id, 'assets/images/lives-3.png')
-        await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
         self.bot.rest.set_user_lives(self.user_id, 0)
         self.bot.rest.send_mail(self.user_id, 7)
+        await self.photo_message(self.user_id, 'assets/images/lives-3.png')
+        await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
 
     
     ## LESSON 3 ##
@@ -707,10 +707,10 @@ class Notifications:
             url=self.urls['lk'])
         )
         
+        self.bot.rest.send_mail(self.user_id, 8)
         await self.video_message(self.user_id, 'assets/videos/screencasts/3.mov')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.send_mail(self.user_id, 8)
 
     async def lesson_3_1(self):
         builder = InlineKeyboardBuilder()
@@ -861,9 +861,9 @@ class Notifications:
             url=self.urls['lk'])
         )
         
+        self.bot.rest.set_user_lives(self.user_id, 2)
         await self.photo_message(self.user_id, 'assets/images/lives-1.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.set_user_lives(self.user_id, 2)
 
     async def lesson_3_5(self):
         builder = InlineKeyboardBuilder()
@@ -905,9 +905,9 @@ class Notifications:
             url=self.urls['lk'])
         )
         
+        self.bot.rest.set_user_lives(self.user_id, 1)
         await self.photo_message(self.user_id, 'assets/images/lives-2.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.set_user_lives(self.user_id, 1)
 
     async def lesson_3_7(self):
         builder = InlineKeyboardBuilder()
@@ -950,10 +950,10 @@ class Notifications:
             url=self.urls['renat'])
         )
         
-        await self.photo_message(self.user_id, 'assets/images/lives-3.png')
-        await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
         self.bot.rest.set_user_lives(self.user_id, 0)
         self.bot.rest.send_mail(self.user_id, 10)
+        await self.photo_message(self.user_id, 'assets/images/lives-3.png')
+        await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
 
     
     ## LESSON 4 ##
@@ -973,10 +973,10 @@ class Notifications:
             url=self.urls['lk'])
         )
         
+        self.bot.rest.send_mail(self.user_id, 11)
         await self.video_message(self.user_id, 'assets/videos/screencasts/4.mov')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.send_mail(self.user_id, 11)
 
     async def lesson_4_1(self):
         builder = InlineKeyboardBuilder()
@@ -1000,10 +1000,10 @@ class Notifications:
             url=self.urls['renat'])
         )
         
+        self.bot.rest.send_mail(self.user_id, 12)
         await self.video_message(self.user_id, 'assets/videos/circles/8.mp4')
         await asyncio.sleep(1)
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.send_mail(self.user_id, 12)
 
     async def lesson_4_2(self):
         builder = InlineKeyboardBuilder()
@@ -1068,9 +1068,9 @@ class Notifications:
             url=self.urls['renat'])
         )
         
+        self.bot.rest.send_mail(self.user_id, 18)
         await self.photo_message(self.user_id, 'assets/images/4-3.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.send_mail(self.user_id, 18)
 
     async def lesson_4_5(self):
         builder = InlineKeyboardBuilder()
@@ -1173,9 +1173,9 @@ class Notifications:
             url=self.urls['lk'])
         )
 
+        self.bot.rest.send_mail(self.user_id, 17)
         await self.photo_message(self.user_id, 'assets/images/4-10.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.send_mail(self.user_id, 17)
     
     # async def lesson_4_9(self):
     #     builder = InlineKeyboardBuilder()
@@ -1397,7 +1397,7 @@ class Notifications:
             url=self.urls['renat'])
         )
         
+        self.bot.rest.set_user_lives(self.user_id, 3)
         await self.photo_message(self.user_id, 'assets/images/done.png')
         await self.bot.bot.send_message(self.user_id, text=msg, reply_markup=builder.as_markup())
-        self.bot.rest.set_user_lives(self.user_id, 3)
     

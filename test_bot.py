@@ -75,7 +75,7 @@ class TgBot:
             # mins till deadline
             mins_left = (time.mktime(time_dl) - time.time()) / 60
             # add last step delay because it's after deadline
-            if (current_lesson + 1 == len(lessons)):
+            if (current_lesson == 3):
                 # don't start if lead exists
                 try:
                     lead = self.rest.user_check_lead(user_id)
@@ -182,8 +182,8 @@ class TgBot:
 
                         if (type(res) in self.exceptions):
                             msg = f"Произошла ошибка при попытке отправить запрос"
-                            # print(res.response.text)
-                            logger.error(res.response.text)
+                            # print(res.response)
+                            logger.error(res.response)
                             await self.bot.send_message(message.chat.id, msg)
                             return
                         elif ('result' not in res):

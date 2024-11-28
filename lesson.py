@@ -51,7 +51,8 @@ class Lesson:
                     return 'overdue'
             except Exception as e:
                 logger.exception(e)
-                return 'unknown'
+                continue
+                # return 'unknown'
             # print('CHECK False')
 
         # If not received/completed after delay
@@ -78,7 +79,8 @@ class Lesson:
                     return True
             except Exception as e:
                 logger.exception(e)
-                return False
+                continue
+                # return False
             # print('CHECK False')
 
         # If not received/completed after delay
